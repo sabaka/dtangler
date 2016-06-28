@@ -1,0 +1,83 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.dtangler</groupId>
+  <artifactId>dtangler-core</artifactId>
+  <version>3.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>Dtangler</name>
+  <url>https://support.requeste.com/dtangler/</url>
+
+  <description>Dtangler is a suite of tools to analyze dependencies</description>
+
+  <licenses>
+    <license>
+      <name>Eclipse Public License</name>
+      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>https://github.com/sysart/dtangler.git</connection>
+    <url>https://github.com/sysart/dtangler</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <name>Pertti Erkkilä</name>
+      <email>pertti.erkkila@sysart.fi</email>
+    </developer>
+    <developer>
+      <name>Samuli Järvelä</name>
+      <email>samuli.jarvela@sysart.fi</email>
+    </developer>
+    <developer>
+      <name>Kaisa Kittilä</name>
+      <email>kaisa.kittila@sysart.fi</email>
+    </developer>
+    <developer>
+      <name>Kai Koivisto</name>
+      <email>kai.koivisto@sysart.fi</email>
+    </developer>
+    <developer>
+      <name>Pertti Lehtisaari</name>
+      <email>pertti.lehtisaari@sysart.fi</email>
+    </developer>
+    <developer>
+      <name>Marko Oikarinen</name>
+      <email>marko.oikarinen@sysart.fi</email>
+    </developer>
+    <developer>
+      <name>Annika Ruohtula</name>
+      <email>annika.ruohtula@sysart.fi</email>
+    </developer>
+    <developer>
+      <name>Seppo Suorsa</name>
+      <email>seppo.suorsa@sysart.fi</email>
+    </developer>
+    <developer>
+      <name>Daniel Wellner</name>
+      <email>daniel.wellner@sysart.fi</email>
+    </developer>
+  </developers>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.5.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
