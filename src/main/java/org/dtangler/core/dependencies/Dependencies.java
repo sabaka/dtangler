@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.core.dependencies;
 
@@ -16,13 +16,13 @@ import java.util.Set;
 public class Dependencies {
 
 	private class ParentInfo {
-		private Map<Scope, Set<Dependable>> allParents = new HashMap<Scope, Set<Dependable>>();
+		private Map<Scope, Set<Dependable>> allParents = new HashMap<>();
 
 		void addParent(Dependable parent) {
 			Scope scope = parent.getScope();
 			Set<Dependable> parents = this.allParents.get(scope);
 			if (parents == null) {
-				parents = new HashSet<Dependable>();
+				parents = new HashSet<>();
 				allParents.put(scope, parents);
 			}
 			parents.add(parent);
@@ -31,16 +31,16 @@ public class Dependencies {
 		Set<Dependable> getParents(Scope scope) {
 			Set<Dependable> parents = this.allParents.get(scope);
 			return parents != null ? parents : Collections
-					.<Dependable> emptySet();
+					.<Dependable>emptySet();
 		}
 	}
 
-	private final Map<Scope, Set<Dependable>> allItems = new HashMap<Scope, Set<Dependable>>();
-	private final Map<Dependable, Map<Dependable, Integer>> dependencies = new HashMap<Dependable, Map<Dependable, Integer>>();
-	private final Map<Dependable, Set<Dependable>> allChilds = new HashMap<Dependable, Set<Dependable>>();
-	private final Map<Dependable, ParentInfo> parents = new HashMap<Dependable, ParentInfo>();
+	private final Map<Scope, Set<Dependable>> allItems = new HashMap<>();
+	private final Map<Dependable, Map<Dependable, Integer>> dependencies = new HashMap<>();
+	private final Map<Dependable, Set<Dependable>> allChilds = new HashMap<>();
+	private final Map<Dependable, ParentInfo> parents = new HashMap<>();
 	// scopeGraphCache is needed to speed up analysis
-	private final Map<Scope, DependencyGraph> scopeGraphCache = new HashMap<Scope, DependencyGraph>();
+	private final Map<Scope, DependencyGraph> scopeGraphCache = new HashMap<>();
 	private Scope defaultScope;
 
 	public enum DependencyFilter {
@@ -48,7 +48,7 @@ public class Dependencies {
 	}
 
 	public List<Scope> getAvailableScopes() {
-		List<Scope> sortedScopes = new ArrayList<Scope>(allItems.keySet());
+		List<Scope> sortedScopes = new ArrayList<>(allItems.keySet());
 		Collections.sort(sortedScopes, new ScopeComparator());
 		return sortedScopes;
 	}
@@ -56,16 +56,18 @@ public class Dependencies {
 	public Scope getChildScope(Scope scope) {
 		List<Scope> scopes = getAvailableScopes();
 		int index = scopes.indexOf(scope);
-		if (index < 0 || index == scopes.size() - 1)
+		if (index < 0 || index == scopes.size() - 1) {
 			return null;
+		}
 		return scopes.get(index + 1);
 	}
 
 	public Scope getParentScope(Scope scope) {
 		List<Scope> scopes = getAvailableScopes();
 		int index = scopes.indexOf(scope);
-		if (index <= 0)
+		if (index <= 0) {
 			return null;
+		}
 		return scopes.get(index - 1);
 	}
 
@@ -74,13 +76,15 @@ public class Dependencies {
 	}
 
 	public Scope getDefaultScope() {
-		if (defaultScope != null)
+		if (defaultScope != null) {
 			return defaultScope;
+		}
 		List<Scope> scopes = getAvailableScopes();
 		if (scopes != null && scopes.size() > 0) {
 			for (Scope scope : scopes) {
-				if (scope == null)
+				if (scope == null) {
 					continue;
+				}
 				defaultScope = scope;
 				return defaultScope;
 			}
@@ -110,7 +114,7 @@ public class Dependencies {
 
 	private Set<Dependable> getItems(Scope graphScope,
 			Set<Dependable> selectedParents) {
-		Set<Dependable> items = new HashSet<Dependable>();
+		Set<Dependable> items = new HashSet<>();
 		for (Dependable item : getItems(graphScope)) {
 			for (Dependable parent : selectedParents) {
 				if (getParents(item, parent.getScope()).contains(parent)) {
@@ -149,24 +153,29 @@ public class Dependencies {
 			}
 			if (dependant == null || dependee == null
 					|| dependant.equals(dependee) || selectedParents == null
-					|| parentGraphScope == null)
+					|| parentGraphScope == null) {
 				return;
+			}
 			Set<Dependable> parentsOfDependant = getParents(dependant,
 					parentGraphScope);
-			if (parentsOfDependant == null)
+			if (parentsOfDependant == null) {
 				return;
+			}
 			for (Dependable parentOfDependee : getParents(dependee,
 					parentGraphScope)) {
 				if (parentOfDependee != null
 						&& selectedParents.contains(parentOfDependee)) {
 					for (Dependable parentOfDependant : parentsOfDependant) {
-						if (!selectedParents.contains(parentOfDependant))
+						if (!selectedParents.contains(parentOfDependant)) {
 							continue;
+						}
 						if (!parentOfDependee.equals(parentOfDependant)) {
-							if (!graph.getAllItems().contains(dependant))
+							if (!graph.getAllItems().contains(dependant)) {
 								graph.addItem(dependant);
-							if (!graph.getAllItems().contains(dependee))
+							}
+							if (!graph.getAllItems().contains(dependee)) {
 								graph.addItem(dependee);
+							}
 							graph.addDependency(dependant, dependee);
 							return;
 						}
@@ -180,7 +189,7 @@ public class Dependencies {
 
 	private Set<Dependable> getItems(Scope scope) {
 		Set<Dependable> result = allItems.get(scope);
-		return result != null ? result : Collections.<Dependable> emptySet();
+		return result != null ? result : Collections.<Dependable>emptySet();
 	}
 
 	private void addDependencies(DependencyGraph graph, Dependable item,
@@ -229,19 +238,21 @@ public class Dependencies {
 					selectedParents, dependencyFilter);
 			Map<Dependable, Integer> childDependenciesMap = dependencies
 					.get(child);
-			if (childDependenciesMap == null)
+			if (childDependenciesMap == null) {
 				continue;
+			}
 			Set<Dependable> childDeps = childDependenciesMap.keySet();
 			for (Dependable dep : childDeps) {
-				for (Dependable parent : getParents(dep, graphScope))
+				for (Dependable parent : getParents(dep, graphScope)) {
 					addDependencyToGraph(graph, dependant, parent,
 							selectedParents, dependencyFilter);
+				}
 			}
 		}
 	}
 
 	public Set<Dependable> getAllItems() {
-		Set<Dependable> items = new HashSet<Dependable>();
+		Set<Dependable> items = new HashSet<>();
 		for (Scope scope : getAvailableScopes()) {
 			items.addAll(allItems.get(scope));
 		}
@@ -251,7 +262,7 @@ public class Dependencies {
 	public Set<Dependable> getParents(Dependable item, Scope scope) {
 		ParentInfo parentInfo = parents.get(item);
 		return parentInfo != null ? parentInfo.getParents(scope) : Collections
-				.<Dependable> emptySet();
+				.<Dependable>emptySet();
 	}
 
 	public Scope getParentScope(Dependable item) {
@@ -270,7 +281,7 @@ public class Dependencies {
 
 	public Set<Dependable> getParentsFromAllScopes(Dependable item) {
 		List<Scope> parentScopes = getParentScopes(item);
-		Set<Dependable> parents = new HashSet<Dependable>();
+		Set<Dependable> parents = new HashSet<>();
 		for (Scope scope : parentScopes) {
 			parents.addAll(getParents(item, scope));
 		}
@@ -279,7 +290,7 @@ public class Dependencies {
 
 	public Set<Dependable> getChilds(Dependable item) {
 		Set<Dependable> result = allChilds.get(item);
-		return result != null ? result : Collections.<Dependable> emptySet();
+		return result != null ? result : Collections.<Dependable>emptySet();
 	}
 
 	public void addDependencies(Dependable dependant,
@@ -292,7 +303,7 @@ public class Dependencies {
 
 		Map<Dependable, Integer> dependees = dependencies.get(dependant);
 		if (dependees == null) {
-			dependees = new HashMap<Dependable, Integer>();
+			dependees = new HashMap<>();
 			dependencies.put(dependant, dependees);
 		}
 		dependees.putAll(newDependees);
@@ -302,12 +313,13 @@ public class Dependencies {
 
 	public void addChild(Dependable parent, Dependable child) {
 		addItem(parent);
-		if (parent.equals(child))
+		if (parent.equals(child)) {
 			return; // guard for ownership relation on self
+		}
 		addItem(child);
 		Set<Dependable> childs = allChilds.get(parent);
 		if (childs == null) {
-			childs = new HashSet<Dependable>();
+			childs = new HashSet<>();
 			allChilds.put(parent, childs);
 		}
 		childs.add(child);
@@ -328,8 +340,9 @@ public class Dependencies {
 
 	private void setParentToChildsOf(Dependable item, Dependable newParent) {
 		for (Dependable child : getChilds(item)) {
-			if (child.equals(newParent))
+			if (child.equals(newParent)) {
 				continue;// guard for cyclic ownership relations
+			}
 			setParent(newParent, child);
 		}
 	}
@@ -338,7 +351,7 @@ public class Dependencies {
 		Scope scope = item.getScope();
 		Set<Dependable> items = allItems.get(scope);
 		if (items == null) {
-			items = new HashSet<Dependable>();
+			items = new HashSet<>();
 			allItems.put(scope, items);
 		}
 		items.add(item);

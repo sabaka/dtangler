@@ -15,10 +15,12 @@ public class SingleRuleMember implements RuleMember {
 		this.name = name;
 	}
 
+	@Override
 	public boolean appliesTo(Dependable dependable) {
 		return name.equals(dependable.getDisplayName());
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}

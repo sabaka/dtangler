@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.javaengine.dependencyengine;
 
@@ -17,8 +17,8 @@ import org.dtangler.javaengine.types.JavaScope;
 public class ClassDependencies {
 
 	private final Map<String, JavaClass> classes;
-	private final Map<String, Dependable> packages = new HashMap();
-	private final Map<String, Dependable> locations = new HashMap();
+	private final Map<String, Dependable> packages = new HashMap<>();
+	private final Map<String, Dependable> locations = new HashMap<>();
 
 	public ClassDependencies(Set<JavaClass> classes) {
 		Set<JavaClass> normalizedClasses = new InnerClassNormalizer()
@@ -27,8 +27,8 @@ public class ClassDependencies {
 		setUpperScopes(normalizedClasses);
 	}
 
-	private Map<String, JavaClass> getFullClassNames(Set<JavaClass> classes) {
-		Map<String, JavaClass> map = new HashMap<String, JavaClass>();
+	private static Map<String, JavaClass> getFullClassNames(Set<JavaClass> classes) {
+		Map<String, JavaClass> map = new HashMap<>();
 		for (JavaClass clazz : classes) {
 			map.put(clazz.getFullName(), clazz);
 		}
@@ -36,8 +36,8 @@ public class ClassDependencies {
 	}
 
 	private void setUpperScopes(Set<JavaClass> classes) {
-		Map<String, Dependable> pkgs = new HashMap();
-		Map<String, Dependable> locs = new HashMap();
+		Map<String, Dependable> pkgs = new HashMap<>();
+		Map<String, Dependable> locs = new HashMap<>();
 		for (JavaClass clazz : classes) {
 			setPackageNames(pkgs, clazz);
 			setLocationNames(locs, clazz);
@@ -46,7 +46,7 @@ public class ClassDependencies {
 		this.locations.putAll(locs);
 	}
 
-	private void setPackageNames(Map<String, Dependable> pkgs, JavaClass clazz) {
+	private static void setPackageNames(Map<String, Dependable> pkgs, JavaClass clazz) {
 		String package1 = clazz.getPackage();
 		Dependable pkg = pkgs.get(package1);
 		if (pkg == null) {
@@ -82,12 +82,13 @@ public class ClassDependencies {
 	}
 
 	private Map<Dependable, Integer> getDependencies(JavaClass javaClass) {
-		Map<Dependable, Integer> dependencies = new HashMap();
+		Map<Dependable, Integer> dependencies = new HashMap<>();
 		Map<String, Integer> javaDeps = javaClass.getDependencies();
 		for (String depName : javaDeps.keySet()) {
 			JavaClass dep = classes.get(depName);
-			if (dep == null)
+			if (dep == null) {
 				continue; // outer dep
+			}
 			dependencies.put(dep.toDependable(), javaDeps.get(depName));
 		}
 		return dependencies;

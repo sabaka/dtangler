@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.core.dependencies;
 
@@ -14,10 +14,10 @@ import java.util.Set;
 public class DependencyGraph {
 
 	private final Scope scope;
-	private final Map<Dependable, Set<Dependable>> dependants = new HashMap<Dependable, Set<Dependable>>();
-	private final Map<Dependable, Set<Dependable>> dependencies = new HashMap<Dependable, Set<Dependable>>();
-	private final Map<Dependency, Integer> dependencyWeights = new HashMap<Dependency, Integer>();
-	private final Set<Dependable> allItems = new HashSet<Dependable>();
+	private final Map<Dependable, Set<Dependable>> dependants = new HashMap<>();
+	private final Map<Dependable, Set<Dependable>> dependencies = new HashMap<>();
+	private final Map<Dependency, Integer> dependencyWeights = new HashMap<>();
+	private final Set<Dependable> allItems = new HashSet<>();
 
 	public DependencyGraph(Scope scope) {
 		this.scope = scope;
@@ -33,10 +33,12 @@ public class DependencyGraph {
 	}
 
 	public void addDependency(Dependable dependant, Dependable dependee) {
-		if (!isValid(dependant) || !isValid(dependee))
+		if (!isValid(dependant) || !isValid(dependee)) {
 			return;
-		if (dependant.equals(dependee))
+		}
+		if (dependant.equals(dependee)) {
 			return;
+		}
 		getDependencies(dependant).add(dependee);
 		getDependants(dependee).add(dependant);
 		addDependencyWeight(dependant, dependee);
@@ -49,10 +51,11 @@ public class DependencyGraph {
 	private void addDependencyWeight(Dependable dependant, Dependable dependee) {
 		Dependency dependency = new Dependency(dependant, dependee);
 		Integer weight = dependencyWeights.get(dependency);
-		if (weight == null)
+		if (weight == null) {
 			weight = 1;
-		else
+		} else {
 			weight++;
+		}
 		dependencyWeights.put(dependency, weight);
 	}
 
@@ -63,7 +66,7 @@ public class DependencyGraph {
 	public Set<Dependable> getDependants(Dependable dependant) {
 		Set<Dependable> classes = dependants.get(dependant);
 		if (classes == null) {
-			classes = new HashSet<Dependable>();
+			classes = new HashSet<>();
 			dependants.put(dependant, classes);
 		}
 		return classes;
@@ -72,7 +75,7 @@ public class DependencyGraph {
 	public Set<Dependable> getDependencies(Dependable dependee) {
 		Set<Dependable> classes = dependencies.get(dependee);
 		if (classes == null) {
-			classes = new HashSet<Dependable>();
+			classes = new HashSet<>();
 			dependencies.put(dependee, classes);
 		}
 		return classes;
@@ -81,7 +84,7 @@ public class DependencyGraph {
 	public float getInstability(Dependable item) {
 		float ce = getDependencyCount(item);
 		float ca = getDependantCount(item);
-		float f = (ce / (ce + ca));
+		float f = ce / (ce + ca);
 		return f;
 	}
 
@@ -112,8 +115,9 @@ public class DependencyGraph {
 
 	public Dependable getItemByName(String name) {
 		for (Dependable dependable : getAllItems()) {
-			if (dependable.getDisplayName().equals(name))
+			if (dependable.getDisplayName().equals(name)) {
 				return dependable;
+			}
 		}
 		return null;
 	}

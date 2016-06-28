@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.core.ruleanalysis;
 
@@ -49,8 +49,9 @@ public class Rule {
 
 	public boolean appliesToRightSide(Dependable dependable) {
 		for (RuleMember rightSideItem : rightSide) {
-			if (rightSideItem.appliesTo(dependable))
+			if (rightSideItem.appliesTo(dependable)) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -69,25 +70,27 @@ public class Rule {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((leftSide == null) ? 0 : leftSide.hashCode());
+				+ (leftSide == null ? 0 : leftSide.hashCode());
 		result = prime * result
-				+ ((rightSide == null) ? 0 : rightSide.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
+				+ (rightSide == null ? 0 : rightSide.hashCode());
+		result = prime * result + (type == null ? 0 : type.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof Rule))
+		if (!(obj instanceof Rule)) {
 			return false;
+		}
 		Rule other = (Rule) obj;
 		return type.equals(other.type) && leftSide.equals(other.leftSide)
 				&& rightSide.equals(other.rightSide);
 	}
 
-	private String getCommaSeparatedItems(Set<RuleMember> items) {
-		if (items.isEmpty())
+	private static String getCommaSeparatedItems(Set<RuleMember> items) {
+		if (items.isEmpty()) {
 			return "";
+		}
 		return items.toString().substring(1, items.toString().length() - 1);
 	}
 }

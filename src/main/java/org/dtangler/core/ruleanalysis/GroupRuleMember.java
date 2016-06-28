@@ -17,6 +17,7 @@ public class GroupRuleMember implements RuleMember {
 		this.group = group;
 	}
 
+	@Override
 	public boolean appliesTo(Dependable dependable) {
 		if (group.getGroupItems().contains(dependable.getFullyQualifiedName()))
 			return true;
@@ -41,6 +42,7 @@ public class GroupRuleMember implements RuleMember {
 		return false;
 	}
 
+	@Override
 	public String getName() {
 		return group.getName();
 	}

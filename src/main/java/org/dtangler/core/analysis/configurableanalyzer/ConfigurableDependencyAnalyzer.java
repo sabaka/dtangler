@@ -1,7 +1,7 @@
-//This product is provided under the terms of EPL (Eclipse Public License) 
+//This product is provided under the terms of EPL (Eclipse Public License)
 //version 1.0.
 //
-//The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+//The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.core.analysis.configurableanalyzer;
 
@@ -22,7 +22,7 @@ public class ConfigurableDependencyAnalyzer {
 		analyzer = buildAnalyzer(arguments);
 	}
 
-	private DependencyAnalyzer buildAnalyzer(Arguments args) {
+	private static DependencyAnalyzer buildAnalyzer(Arguments args) {
 		CompositeAnalyzer analyzer = new CompositeAnalyzer();
 		analyzer.add(new CycleValidator(args.getCyclesAllowed()));
 		analyzer.add(new ForbiddenDependencyFinder(new RuleCreator(args
@@ -35,7 +35,7 @@ public class ConfigurableDependencyAnalyzer {
 		analyzer.analyze(dependencies);
 		AnalysisResult analysisResult = new AnalysisResult(analyzer
 				.getViolations(), analyzer.getChildViolations(), analyzer
-				.isValidResult());
+						.isValidResult());
 		return analysisResult;
 	}
 }

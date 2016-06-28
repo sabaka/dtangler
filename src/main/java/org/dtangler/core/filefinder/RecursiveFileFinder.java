@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.core.filefinder;
 
@@ -13,13 +13,13 @@ import java.util.Set;
 
 public class RecursiveFileFinder {
 
-	private final Map<File, String> files = new HashMap();
+	private final Map<File, String> files = new HashMap<>();
 	private FileFilter fileFilter = new AlwaysValidFileFilter();
 
 	public void findFiles(String path) {
 		File file = new File(path);
-		path = file.getAbsolutePath();
-		findFiles(file, path);
+		String absolutePath = file.getAbsolutePath();
+		findFiles(file, absolutePath);
 	}
 
 	private void findFiles(File file, String path) {
@@ -27,8 +27,9 @@ public class RecursiveFileFinder {
 			for (File subFile : file.listFiles()) {
 				findFiles(subFile, path);
 			}
-		} else if (file.isFile())
+		} else if (file.isFile()) {
 			addFile(file, path);
+		}
 	}
 
 	private void addFile(File file, String path) {

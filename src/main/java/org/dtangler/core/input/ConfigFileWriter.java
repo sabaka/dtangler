@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.core.input;
 
@@ -12,8 +12,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.dtangler.core.configuration.Arguments;
 import org.dtangler.core.configuration.Group;
@@ -57,19 +57,21 @@ public class ConfigFileWriter {
 							+ file.getAbsolutePath());
 		} finally {
 			try {
-				if (output != null)
+				if (output != null) {
 					output.close();
+				}
 			} catch (IOException e) {
 				// don't care. Nothing we can do about it
 			}
 		}
 	}
 
-	private String createGroupValue(Map<String, Group> groups) {
+	private static String createGroupValue(Map<String, Group> groups) {
 		StringBuilder sb = new StringBuilder();
 		for (Group group : groups.values()) {
-			if (sb.length() > 0)
+			if (sb.length() > 0) {
 				sb.append(";\\\n\t");
+			}
 			addValuesList(sb, group.getName(), ParserConstants.CONTAINS, group
 					.getGroupItems());
 			if (group.getExcludedItems().size() > 0) {
@@ -83,7 +85,7 @@ public class ConfigFileWriter {
 		return sb.toString();
 	}
 
-	private String createRuleValues(
+	private static String createRuleValues(
 			Map<String, Set<String>> forbiddenDependencies,
 			Map<String, Set<String>> allowedDependencies) {
 
@@ -94,18 +96,19 @@ public class ConfigFileWriter {
 		return forbiddenDeps + ";\\\n\t" + allowedDeps;
 	}
 
-	private String createMapValue(String subKey, Map<String, Set<String>> map) {
+	private static String createMapValue(String subKey, Map<String, Set<String>> map) {
 		StringBuilder sb = new StringBuilder();
 		for (Entry<String, Set<String>> entry : map.entrySet()) {
-			if (sb.length() > 0)
+			if (sb.length() > 0) {
 				sb.append(";\\\n\t");
+			}
 			addValuesList(sb, entry.getKey(), subKey, entry.getValue());
 		}
 		return sb.toString();
 
 	}
 
-	private void addValuesList(StringBuilder sb, String key, String subKey,
+	private static void addValuesList(StringBuilder sb, String key, String subKey,
 			Set<String> list) {
 		sb.append(key);
 		sb.append(" \\\n\t\t");
@@ -114,24 +117,26 @@ public class ConfigFileWriter {
 		sb.append(createValuesList(list, ",\\\n\t\t\t"));
 	}
 
-	private String createBooleanValue(boolean b) {
+	private static String createBooleanValue(boolean b) {
 		return b ? ParserConstants.VALUE_TRUE : ParserConstants.VALUE_FALSE;
 	}
 
-	private String createValuesList(Collection<String> values, String separator) {
+	private static String createValuesList(Collection<String> values, String separator) {
 		StringBuilder sb = new StringBuilder();
 		for (String path : values) {
-			if (sb.length() > 0)
+			if (sb.length() > 0) {
 				sb.append(separator);
+			}
 			sb.append(path);
 		}
 		return sb.toString();
 	}
 
-	private void writeParameter(BufferedWriter output, String key, String value)
+	private static void writeParameter(BufferedWriter output, String key, String value)
 			throws IOException {
-		if (value == null || value.equals(""))
+		if (value == null || value.equals("")) {
 			return; // empty values are ignored
+		}
 		output.write(key);
 		output.write(" = ");
 		output.write(value);

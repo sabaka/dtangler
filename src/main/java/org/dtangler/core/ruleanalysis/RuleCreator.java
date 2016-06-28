@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.core.ruleanalysis;
 
@@ -29,7 +29,7 @@ public class RuleCreator {
 	}
 
 	public List<Rule> createRules() {
-		List<Rule> rules = new ArrayList<Rule>();
+		List<Rule> rules = new ArrayList<>();
 
 		for (String key : forbiddenDependencies.keySet()) {
 			RuleMember member = getRuleMember(key);
@@ -53,7 +53,7 @@ public class RuleCreator {
 	}
 
 	private Set<RuleMember> getMembers(Set<String> list) {
-		Set<RuleMember> result = new HashSet<RuleMember>();
+		Set<RuleMember> result = new HashSet<>();
 		for (String name : list) {
 			result.add(getRuleMember(name));
 		}
@@ -70,7 +70,7 @@ public class RuleCreator {
 		return true;
 	}
 
-	private String getGroupName(String name) {
+	private static String getGroupName(String name) {
 		// remove the group identifier
 		return name.substring(ParserConstants.GROUP_IDENTIFIER.length());
 	}

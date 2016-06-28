@@ -1,4 +1,4 @@
-//This product is provided under the terms of EPL (Eclipse Public License) 
+//This product is provided under the terms of EPL (Eclipse Public License)
 //version 1.0.
 //
 //The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
@@ -20,27 +20,32 @@ public class ChildViolation implements Violation {
 		this.violation = violation;
 	}
 
+	@Override
 	public boolean appliesTo(Set<Dependable> dependables) {
 		return dependables.contains(parent);
 	}
 
+	@Override
 	public String asText() {
 		return parent.getDisplayName() + " contains a violation: "
 				+ violation.asText();
 	}
 
+	@Override
 	public Severity getSeverity() {
 		return violation.getSeverity();
 	}
 
+	@Override
 	public Set<Dependable> getMembers() {
 		return violation.getMembers();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof ChildViolation))
+		if (!(obj instanceof ChildViolation)) {
 			return false;
+		}
 		ChildViolation other = (ChildViolation) obj;
 		return parent.equals(other.parent) && violation.equals(other.violation);
 	}

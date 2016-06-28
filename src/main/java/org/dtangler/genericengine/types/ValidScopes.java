@@ -8,29 +8,32 @@ import org.dtangler.core.exception.DtException;
 public class ValidScopes {
 
 	private final static int MAX_INDEX_VALUE = 100;
-	private final List<String> names = new ArrayList<String>();
+	private final List<String> names = new ArrayList<>();
 	private ItemScope defaultScope = null;
 
 	public String getScopeName(int index) {
-		if (index < 0 || index > MAX_INDEX_VALUE)
-			throw new DtException("invalid scope level " + (index+1));
-		if (index > names.size() - 1)
+		if (index < 0 || index > MAX_INDEX_VALUE) {
+			throw new DtException("invalid scope level " + (index + 1));
+		}
+		if (index > names.size() - 1) {
 			return null;
+		}
 		return names.get(index);
 	}
 
 	public String getValidScopeName(int index) {
 		String scopeName = getScopeName(index);
 		if (scopeName == null) {
-			throw new DtException("undefined scope name at level "+(index+1));
+			throw new DtException("undefined scope name at level " + (index + 1));
 		}
 		return scopeName;
 	}
-	
+
 	public boolean containsUndefinedScopeNames() {
 		for (int i = 0; i < names.size(); i++) {
-			if (getScopeName(i) == null)
+			if (getScopeName(i) == null) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -38,7 +41,7 @@ public class ValidScopes {
 	public void generateScopeNamesForUndefinedScopeNames(String scopeNamePattern, String regex) {
 		for (int index = 0; index < names.size(); index++) {
 			if (getScopeName(index) == null) {
-				setScopeName(scopeNamePattern.replaceFirst(regex, (index+1)+""), index);
+				setScopeName(scopeNamePattern.replaceFirst(regex, index + 1 + ""), index);
 			}
 		}
 	}
@@ -52,19 +55,22 @@ public class ValidScopes {
 	}
 
 	public void setScopeName(String scopeName, int index) {
-		if (scopeName == null)
+		if (scopeName == null) {
 			throw new DtException("invalid scope name: null");
-		if (index < 0 || index > MAX_INDEX_VALUE)
-			throw new DtException("invalid scope level " + (index+1)
+		}
+		if (index < 0 || index > MAX_INDEX_VALUE) {
+			throw new DtException("invalid scope level " + (index + 1)
 					+ ", scope: " + scopeName);
+		}
 		scopeName = scopeName.trim();
 		if (names.contains(scopeName)) {
-			if (index == names.indexOf(scopeName))
+			if (index == names.indexOf(scopeName)) {
 				return;
+			}
 			throw new DtException("invalid scope name \"" + scopeName
-					+ "\" at level " + (index+1)
+					+ "\" at level " + (index + 1)
 					+ ": scope already exists at level "
-					+ (names.indexOf(scopeName)+1));
+					+ (names.indexOf(scopeName) + 1));
 		}
 		if (defaultScope == null) {
 			defaultScope = new ItemScope(scopeName, index);
@@ -86,8 +92,9 @@ public class ValidScopes {
 	}
 
 	public int getScopeIndex(String scopeName) {
-		if (scopeName == null)
+		if (scopeName == null) {
 			throw new DtException("invalid scope name: null");
+		}
 		scopeName = scopeName.trim();
 		if (names.contains(scopeName)) {
 			return names.indexOf(scopeName);

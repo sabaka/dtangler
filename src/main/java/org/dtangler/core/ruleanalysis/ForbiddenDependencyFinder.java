@@ -1,7 +1,7 @@
-//This product is provided under the terms of EPL (Eclipse Public License) 
+//This product is provided under the terms of EPL (Eclipse Public License)
 //version 1.0.
 //
-//The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+//The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.core.ruleanalysis;
 
@@ -20,6 +20,7 @@ public class ForbiddenDependencyFinder extends DependencyAnalyzer {
 		this.ruleFilter = new RuleFilter(rules);
 	}
 
+	@Override
 	public boolean isValidResult() {
 		return getViolations().isEmpty();
 	}
@@ -40,8 +41,9 @@ public class ForbiddenDependencyFinder extends DependencyAnalyzer {
 		rules.addAll(ruleFilter.getParentRulesForDependant(dependant,
 				dependencies));
 
-		if (rules.size() == 0)
+		if (rules.size() == 0) {
 			return;
+		}
 
 		for (Rule rule : rules) {
 			checkRule(dependant, dependees, rule, dependencies);
@@ -54,26 +56,31 @@ public class ForbiddenDependencyFinder extends DependencyAnalyzer {
 			Set<Dependable> parents = dependencies
 					.getParentsFromAllScopes(dependee);
 
-			if (!isRuleApplicable(rule, dependee, parents))
+			if (!isRuleApplicable(rule, dependee, parents)) {
 				continue;
+			}
 
 			// check for an allowing rule that overrides the forbidden rule
-			if (ruleFilter.isDependencyAllowedByRule(dependant, dependee))
+			if (ruleFilter.isDependencyAllowedByRule(dependant, dependee)) {
 				continue;
+			}
 
 			addViolation(dependant, dependee, rule);
 		}
 	}
 
-	private boolean isRuleApplicable(Rule rule, Dependable dependee,
+	private static boolean isRuleApplicable(Rule rule, Dependable dependee,
 			Set<Dependable> parents) {
-		if (rule.getType().equals(Rule.Type.canDepend))
+		if (rule.getType().equals(Rule.Type.canDepend)) {
 			return false;
-		if (rule.appliesToRightSide(dependee))
+		}
+		if (rule.appliesToRightSide(dependee)) {
 			return true;
+		}
 		for (Dependable parent : parents) {
-			if (rule.appliesToRightSide(parent))
+			if (rule.appliesToRightSide(parent)) {
 				return true;
+			}
 		}
 		return false;
 	}

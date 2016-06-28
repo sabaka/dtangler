@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.javaengine.classfileparser;
 
@@ -52,7 +52,7 @@ public class ClassFileParser {
 		}
 	}
 
-	private DataInput loadFile(File file) throws IOException {
+	private static DataInput loadFile(File file) throws IOException {
 		FileInputStream fileInputStream = null;
 		try {
 			fileInputStream = new FileInputStream(file);
@@ -62,8 +62,9 @@ public class ClassFileParser {
 		} catch (RuntimeException e) {
 			throw e;
 		} finally {
-			if (fileInputStream != null)
+			if (fileInputStream != null) {
 				fileInputStream.close();
+			}
 		}
 	}
 
@@ -85,12 +86,13 @@ public class ClassFileParser {
 		return jClass;
 	}
 
-	private void checkMagic(DataInput in) throws IOException {
-		if (in.readInt() != JAVA_MAGIC)
+	private static void checkMagic(DataInput in) throws IOException {
+		if (in.readInt() != JAVA_MAGIC) {
 			throw new RuntimeException("Bad Magic");
+		}
 	}
 
-	private void skipVersionInfo(DataInput in) throws IOException {
+	private static void skipVersionInfo(DataInput in) throws IOException {
 		// skip major and minor
 		in.skipBytes(4);
 	}
@@ -101,17 +103,18 @@ public class ClassFileParser {
 			Constant constant = parseNextConstant(in);
 			pool[i] = constant;
 			// 8-byte constants use two constant pool entries
-			if (constant != null && DOUBLESLOT.equals(constant))
+			if (constant != null && DOUBLESLOT.equals(constant)) {
 				i++;
+			}
 		}
 		return pool;
 	}
 
-	private boolean parseAccessFlags(DataInput in) throws IOException {
+	private static boolean parseAccessFlags(DataInput in) throws IOException {
 		int accessFlags = in.readUnsignedShort();
 
-		boolean isAbstract = ((accessFlags & ACC_ABSTRACT) != 0);
-		boolean isInterface = ((accessFlags & ACC_INTERFACE) != 0);
+		boolean isAbstract = (accessFlags & ACC_ABSTRACT) != 0;
+		boolean isInterface = (accessFlags & ACC_INTERFACE) != 0;
 		return isAbstract || isInterface;
 	}
 
@@ -168,23 +171,23 @@ public class ClassFileParser {
 	private Constant parseNextConstant(DataInput in) throws IOException {
 		byte tag = in.readByte();
 		switch (tag) {
-		case (CONSTANT_UTF8):
+		case CONSTANT_UTF8:
 			return new Constant(tag, in.readUTF());
-		case (CONSTANT_FIELD):
-		case (CONSTANT_METHOD):
-		case (CONSTANT_INTERFACEMETHOD):
-		case (CONSTANT_NAMEANDTYPE):
-		case (CONSTANT_INTEGER):
-		case (CONSTANT_FLOAT):
+		case CONSTANT_FIELD:
+		case CONSTANT_METHOD:
+		case CONSTANT_INTERFACEMETHOD:
+		case CONSTANT_NAMEANDTYPE:
+		case CONSTANT_INTEGER:
+		case CONSTANT_FLOAT:
 			in.skipBytes(4);
 			return null;
-		case (CONSTANT_CLASS):
+		case CONSTANT_CLASS:
 			return new Constant(tag, in.readUnsignedShort());
-		case (CONSTANT_STRING):
+		case CONSTANT_STRING:
 			in.skipBytes(2);
 			return null;
-		case (CONSTANT_LONG):
-		case (CONSTANT_DOUBLE):
+		case CONSTANT_LONG:
+		case CONSTANT_DOUBLE:
 			in.skipBytes(8);
 			return DOUBLESLOT;
 		}
@@ -192,7 +195,7 @@ public class ClassFileParser {
 		throw new IOException("Unknown constant: " + tag);
 	}
 
-	private int parseFieldOrMethodInfo(DataInput in) throws IOException {
+	private static int parseFieldOrMethodInfo(DataInput in) throws IOException {
 		// skip accessFlags (unsigned short) and nameIndex (unsigned short)
 		in.skipBytes(4);
 
@@ -225,8 +228,9 @@ public class ClassFileParser {
 
 				jClass.setSourceFile(toUTF8(pe));
 				break;
-			} else
+			} else {
 				in.skipBytes(length);
+			}
 		}
 	}
 
@@ -256,22 +260,24 @@ public class ClassFileParser {
 
 	private String toUTF8(int entryIndex) throws IOException {
 		Constant entry = getConstantPoolEntry(entryIndex);
-		if (entry.getTag() == CONSTANT_UTF8)
+		if (entry.getTag() == CONSTANT_UTF8) {
 			return (String) entry.getValue();
+		}
 
 		throw new IOException("Constant pool entry is not a UTF8 type: "
 				+ entryIndex);
 	}
 
-	private String slashesToDots(String s) {
+	private static String slashesToDots(String s) {
 		return s.replace(SLASH, DOT);
 	}
 
 	private void addDependency(String s, JavaClass jClass) {
 		if (s.charAt(0) == BRACKET_OPEN) {
 			List<String> types = descriptorToTypes(s);
-			if (types.size() == 0)
+			if (types.size() == 0) {
 				return; // primitives
+			}
 
 			s = types.get(0);
 		}
@@ -280,7 +286,7 @@ public class ClassFileParser {
 		jClass.addDependency(s);
 	}
 
-	private List<String> descriptorToTypes(String descriptor) {
+	private static List<String> descriptorToTypes(String descriptor) {
 		List<String> types = null;
 		int startIndex = 0;
 		int splitIndex = descriptor.indexOf(SEPARATOR, startIndex);
@@ -291,8 +297,9 @@ public class ClassFileParser {
 
 			int index = string.indexOf(CLASS_DESCRIPTOR);
 			if (index >= 0) {
-				if (types == null)
-					types = new ArrayList();
+				if (types == null) {
+					types = new ArrayList<>();
+				}
 				types.add(string.substring(index + 1));
 			}
 		}

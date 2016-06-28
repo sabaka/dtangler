@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.javaengine.dependencyengine;
 
@@ -27,16 +27,19 @@ import org.dtangler.javaengine.types.JavaScope;
 
 public class JavaDependencyEngine extends AbstractDependencyEngine {
 
-	private Scope getDefaultScope(Arguments arguments) {
+	private static Scope getDefaultScope(Arguments arguments) {
 		if (JavaScope.classes.getDisplayName().equalsIgnoreCase(
-				arguments.getScope()))
+				arguments.getScope())) {
 			return JavaScope.classes;
+		}
 		if (JavaScope.locations.getDisplayName().equalsIgnoreCase(
-				arguments.getScope()))
+				arguments.getScope())) {
 			return JavaScope.locations;
+		}
 		return JavaScope.packages;
 	}
 
+	@Override
 	public Dependencies getDependencies(Arguments arguments) {
 		Dependencies dependencies = new ClassDependencies(getJavaClasses(arguments))
 				.getDependencies();
@@ -44,13 +47,16 @@ public class JavaDependencyEngine extends AbstractDependencyEngine {
 		return dependencies;
 	}
 
+	@Override
 	public ArgumentsMatch getArgumentsMatchThisEngineExt(Arguments arguments) {
-		if (arguments == null)
+		if (arguments == null) {
 			throw new DtException("invalid arguments: null");
+		}
 		DependencyEngine.ArgumentsMatch argumentsMatch = ArgumentsMatch.no;
 		for (String path : arguments.getInput()) {
-			if (path == null)
+			if (path == null) {
 				continue;
+			}
 			if (path.toLowerCase().endsWith(".jar")
 					|| path.toLowerCase().endsWith(".class")) {
 				argumentsMatch = DependencyEngine.ArgumentsMatch.yes;
@@ -59,30 +65,34 @@ public class JavaDependencyEngine extends AbstractDependencyEngine {
 				if (!file.isDirectory()) {
 					return DependencyEngine.ArgumentsMatch.no;
 				} else {
-					if (argumentsMatch == ArgumentsMatch.no)
+					if (argumentsMatch == ArgumentsMatch.no) {
 						argumentsMatch = ArgumentsMatch.maybe;
+					}
 				}
 			}
 		}
 		return argumentsMatch;
 	}
 
+	@Override
 	public List<String> getInputFileNameExtensions() {
 		return Arrays.asList("jar", "class");
 	}
 
+	@Override
 	public boolean isDirectoryInputSupported() {
 		return true;
 	}
 
-	private Set<JavaClass> getJavaClasses(Arguments arguments) {
+	private static Set<JavaClass> getJavaClasses(Arguments arguments) {
 		RecursiveFileFinder fileFinder = new RecursiveFileFinder();
 		fileFinder.setFilter(new FullPathWildCardFileFilter(Arrays.asList(
 				".class", ".jar"), arguments.getIgnoredFileMasks()));
-		for (String path : arguments.getInput())
+		for (String path : arguments.getInput()) {
 			fileFinder.findFiles(path);
+		}
 
-		Set<JavaClass> classes = new HashSet<JavaClass>();
+		Set<JavaClass> classes = new HashSet<>();
 		for (File file : fileFinder.getFiles()) {
 			if (file.getName().endsWith(".class")) {
 				classes.add(getDataFromClassFile(file, fileFinder));
@@ -93,7 +103,7 @@ public class JavaDependencyEngine extends AbstractDependencyEngine {
 		return classes;
 	}
 
-	private Set<JavaClass> getDataFromJarFile(File file,
+	private static Set<JavaClass> getDataFromJarFile(File file,
 			RecursiveFileFinder fileFinder) {
 		try {
 			Set<JavaClass> jarContents = new JarFileParser().parse(file);
@@ -107,13 +117,14 @@ public class JavaDependencyEngine extends AbstractDependencyEngine {
 		}
 	}
 
-	private JavaClass getDataFromClassFile(File file,
+	private static JavaClass getDataFromClassFile(File file,
 			RecursiveFileFinder fileFinder) {
 		JavaClass parsed = new ClassFileParser().parse(file);
 		parsed.setLocation(fileFinder.getFilesWithPaths().get(file));
 		return parsed;
 	}
 
+	@Override
 	public String getInputFilesDescription() {
 		return "Java binary file";
 	}

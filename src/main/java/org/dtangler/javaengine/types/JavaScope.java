@@ -10,10 +10,12 @@ import org.dtangler.core.dependencies.Scope;
 public enum JavaScope implements Scope {
 	locations, packages, classes;
 
+	@Override
 	public String getDisplayName() {
 		return name();
 	}
 
+	@Override
 	public int index() {
 		return ordinal();
 	}

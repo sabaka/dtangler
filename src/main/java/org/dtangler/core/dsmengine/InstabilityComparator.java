@@ -18,6 +18,7 @@ public class InstabilityComparator implements Comparator<Dependable> {
 		this.dependencies = dependencies;
 	}
 
+	@Override
 	public int compare(Dependable o1, Dependable o2) {
 		int result = compareInstability(o1, o2);
 		if (result == 0)

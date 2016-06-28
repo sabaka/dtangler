@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.genericengine.dependenciesstreamparser;
 
@@ -24,15 +24,14 @@ import org.dtangler.genericengine.types.ValidScopes;
 
 /**
  * Parser for the dependency definitions stream.
- * 
+ *
  * Dtangler universal frontend API syntax:
- * 
- * dependencies : (dependencyDefinition | itemDefinition)* dependencyDefinition
- * : dependant+ ':' dependee+ '\n' itemDefinition : dependable dependant :
- * dependable dependee : dependable dependaple : displayname | scope '{'
- * fullyqualifiedname '}' fullyqualifiedname : parentfqn? displayname parentfqn
- * : fullyqualifiedname displayname : string
- * 
+ *
+ * dependencies : (dependencyDefinition | itemDefinition)* dependencyDefinition : dependant+ ':' dependee+ '\n'
+ * itemDefinition : dependable dependant : dependable dependee : dependable dependaple : displayname | scope '{'
+ * fullyqualifiedname '}' fullyqualifiedname : parentfqn? displayname parentfqn : fullyqualifiedname displayname :
+ * string
+ *
  */
 public class ItemDependenciesStreamParser {
 
@@ -45,10 +44,11 @@ public class ItemDependenciesStreamParser {
 		return parse(validScopes, getBufferedIOReader(), encoding);
 	}
 
-	private BufferedReader getBufferedIOReader(File file) {
-		if (file == null || file.getAbsolutePath() == null)
+	private static BufferedReader getBufferedIOReader(File file) {
+		if (file == null || file.getAbsolutePath() == null) {
 			throw new DtException(
 					"could not read text file input: file name not specified");
+		}
 		try {
 			return new BufferedReader(new FileReader(file.getAbsolutePath()));
 		} catch (FileNotFoundException e) {
@@ -57,23 +57,24 @@ public class ItemDependenciesStreamParser {
 		}
 	}
 
-	private BufferedReader getBufferedIOReader() {
+	private static BufferedReader getBufferedIOReader() {
 		return new BufferedReader(new InputStreamReader(System.in));
 	}
 
-	private void addItemScopeToValidScopes(ValidScopes validScopes, Item item) {
+	private static void addItemScopeToValidScopes(ValidScopes validScopes, Item item) {
 		String scopeExisting = validScopes.getScopeName(item.getScopeIndex());
 		if (scopeExisting == null) {
 			validScopes.setScopeName(item.getScope(), item.getScopeIndex());
 		} else {
-			if (!scopeExisting.equals(item.getScope()))
+			if (!scopeExisting.equals(item.getScope())) {
 				throw new DtException("scope \"" + item.getScope()
 						+ "\" already exists with the name \"" + scopeExisting
-						+ "\" at level " + (item.getScopeIndex()+1));
+						+ "\" at level " + (item.getScopeIndex() + 1));
+			}
 		}
 	}
 
-	private Item getNewItem(ValidScopes validScopes, String scope,
+	private static Item getNewItem(ValidScopes validScopes, String scope,
 			String displayname, String[] parentDisplaynames, String encoding) {
 		Item item = new Item(scope, displayname, parentDisplaynames, encoding);
 		addItemScopeToValidScopes(validScopes, item);
@@ -98,10 +99,11 @@ public class ItemDependenciesStreamParser {
 		final String itemDefinitionWithoutScopeRegex = "(" + anyItemRegex
 				+ ")+";
 
-		if (itemDefinition == null)
+		if (itemDefinition == null) {
 			throw new DtException("invalid item definition: null");
+		}
 
-		List<Item> items = new ArrayList<Item>();
+		List<Item> items = new ArrayList<>();
 		String[] parents = null;
 		String item = null;
 		String scope = null;
@@ -112,16 +114,18 @@ public class ItemDependenciesStreamParser {
 			while (m.find()) {
 				String[] words = itemDefinition.substring(m.start(), m.end())
 						.trim().split(anyNonItemCharAtLeastOnceRegex);
-				if (words == null || words.length < 2)
+				if (words == null || words.length < 2) {
 					throw new DtException("invalid item definition: \""
 							+ itemDefinition + "\"");
+				}
 				scope = words[0];
 				item = words[words.length - 1];
 				if (words.length > 2) {
 					parents = new String[words.length - 2];
 					for (int iParent = 0, iWord = 0; iWord < words.length; iWord++) {
-						if (iWord > 0 && iWord < words.length - 1)
+						if (iWord > 0 && iWord < words.length - 1) {
 							parents[iParent++] = words[iWord];
+						}
 					}
 				}
 				items.add(getNewItem(validScopes, scope, item, parents,
@@ -137,8 +141,9 @@ public class ItemDependenciesStreamParser {
 						+ itemDefinition + "\"");
 			}
 			for (String word : words) {
-				if (word == null || word.length() == 0)
+				if (word == null || word.length() == 0) {
 					continue;
+				}
 				items.add(getNewItem(validScopes, scope, word.trim(), parents,
 						encoding));
 			}
@@ -150,11 +155,12 @@ public class ItemDependenciesStreamParser {
 
 	}
 
-	private Item getExistingItemFromSet(Set<Item> items, Item item) {
+	private static Item getExistingItemFromSet(Set<Item> items, Item item) {
 		if (items != null) {
 			for (Item itemInSet : items) {
-				if (itemInSet == null)
+				if (itemInSet == null) {
 					continue;
+				}
 				if (itemInSet.equals(item)) {
 					return itemInSet;
 				}
@@ -163,7 +169,7 @@ public class ItemDependenciesStreamParser {
 		return item;
 	}
 
-	private void saveItemsToSet(Set<Item> allItems,
+	private static void saveItemsToSet(Set<Item> allItems,
 			List<Item> itemDependantList, List<Item> itemDependeeList) {
 		for (Item itemDependant : itemDependantList) {
 			if (allItems.contains(itemDependant)) {
@@ -189,12 +195,14 @@ public class ItemDependenciesStreamParser {
 			Set<Item> allItems, String dependencyOrItemDefinition,
 			String encoding) {
 		final String itemDelimiterRegex = "\\:";
-		if (dependencyOrItemDefinition == null)
+		if (dependencyOrItemDefinition == null) {
 			throw new DtException("invalid dependency or item definition: null");
+		}
 		String[] items = dependencyOrItemDefinition.split(itemDelimiterRegex);
-		if (items == null || !(items.length >= 1 && items.length <= 2))
+		if (items == null || !(items.length >= 1 && items.length <= 2)) {
 			throw new DtException("invalid dependency or item definition: \""
 					+ dependencyOrItemDefinition + "\"");
+		}
 		if (items.length == 1) {
 			// item definition
 			saveItemsToSet(allItems,
@@ -210,16 +218,18 @@ public class ItemDependenciesStreamParser {
 
 	public Set<Item> parse(ValidScopes validScopes, BufferedReader in,
 			String encoding) {
-		if (in == null)
+		if (in == null) {
 			throw new DtException("unable to read from stream");
-		Set<Item> items = new HashSet<Item>();
+		}
+		Set<Item> items = new HashSet<>();
 		String line;
 		int lineNo = 0;
 		try {
 			while ((line = in.readLine()) != null) {
 				lineNo++;
-				if (line.length() < 1)
+				if (line.length() < 1) {
 					continue;
+				}
 				parseDependencyOrItemDefinition(validScopes, items, line,
 						encoding);
 			}

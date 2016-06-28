@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.core.input;
 
@@ -26,23 +26,31 @@ public class ArgumentParser {
 
 	public Arguments parseArguments(Map<String, String> values) {
 		if (values.containsKey(ParserConstants.CLASS_PATH_KEY)
-				|| values.containsKey(ParserConstants.INPUT_KEY))
+				|| values.containsKey(ParserConstants.INPUT_KEY)) {
 			parseInput(values);
-		if (values.containsKey(ParserConstants.IGNORE_FILE_MASK_KEY))
+		}
+		if (values.containsKey(ParserConstants.IGNORE_FILE_MASK_KEY)) {
 			parseIgnoredFileMasks(values);
+		}
 		if (values.containsKey(ParserConstants.GROUP_KEY)
-				|| values.containsKey(ParserConstants.GROUPS_KEY))
+				|| values.containsKey(ParserConstants.GROUPS_KEY)) {
 			parseGroups(values);
-		if (values.containsKey(ParserConstants.CYCLES_ALLOWED_KEY))
+		}
+		if (values.containsKey(ParserConstants.CYCLES_ALLOWED_KEY)) {
 			parseCyclesAllowed(values);
-		if (values.containsKey(ParserConstants.RULES_KEY))
+		}
+		if (values.containsKey(ParserConstants.RULES_KEY)) {
 			parseRules(values);
-		if (values.containsKey(ParserConstants.CONFIG_FILE_KEY))
+		}
+		if (values.containsKey(ParserConstants.CONFIG_FILE_KEY)) {
 			parseConfigFileName(values);
-		if (values.containsKey(ParserConstants.SCOPE_KEY))
+		}
+		if (values.containsKey(ParserConstants.SCOPE_KEY)) {
 			parseScope(values);
-		if (values.containsKey(ParserConstants.DEPENDENCY_ENGINE_ID_KEY))
+		}
+		if (values.containsKey(ParserConstants.DEPENDENCY_ENGINE_ID_KEY)) {
 			parseDependencyEngineId(values);
+		}
 		return args;
 	}
 
@@ -66,17 +74,18 @@ public class ArgumentParser {
 		args.setInput(valueList);
 	}
 
-	private List<String> getValues(Map<String, String> values,
+	private static List<String> getValues(Map<String, String> values,
 			String... possibleKeys) {
 		return getValueList(getValue(values, possibleKeys),
 				ParserConstants.BIG_SEPARATOR);
 	}
 
-	private String getValue(Map<String, String> values, String... possibleKeys) {
+	private static String getValue(Map<String, String> values, String... possibleKeys) {
 		for (String key : possibleKeys) {
 			String value = values.get(key);
-			if (value != null)
+			if (value != null) {
 				return value;
+			}
 		}
 		return new String();
 	}
@@ -88,14 +97,15 @@ public class ArgumentParser {
 	}
 
 	private void parseGroups(Map<String, String> values) {
-		Map<String, Group> result = new HashMap();
+		Map<String, Group> result = new HashMap<>();
 		String value = getValue(values, ParserConstants.GROUP_KEY,
 				ParserConstants.GROUPS_KEY);
 		String[] list = value.split(ParserConstants.BIG_SEPARATOR);
 
 		for (String group : list) {
-			if (!group.contains(ParserConstants.CONTAINS))
+			if (!group.contains(ParserConstants.CONTAINS)) {
 				continue;
+			}
 
 			String[] parts = group.split(ParserConstants.CONTAINS, 2);
 			String name = parts[0].trim();
@@ -124,26 +134,27 @@ public class ArgumentParser {
 	}
 
 	private void parseRules(Map<String, String> values) {
-		Map<String, Set<String>> cannotDepend = new HashMap();
-		Map<String, Set<String>> canDepend = new HashMap();
+		Map<String, Set<String>> cannotDepend = new HashMap<>();
+		Map<String, Set<String>> canDepend = new HashMap<>();
 
 		String[] ruleList = values.get(ParserConstants.RULES_KEY).split(
 				ParserConstants.BIG_SEPARATOR);
 
 		for (String ruleString : ruleList) {
-			if (ruleString.contains(ParserConstants.CANNOT_DEPEND))
+			if (ruleString.contains(ParserConstants.CANNOT_DEPEND)) {
 				addRule(ruleString, cannotDepend);
-			else if (ruleString.contains(ParserConstants.CAN_DEPEND))
+			} else if (ruleString.contains(ParserConstants.CAN_DEPEND)) {
 				addRule(ruleString, canDepend);
-			else
+			} else {
 				continue;
+			}
 		}
 
 		args.setForbiddenDependencies(cannotDepend);
 		args.setAllowedDependencies(canDepend);
 	}
 
-	private void addRule(String rule, Map<String, Set<String>> rules) {
+	private static void addRule(String rule, Map<String, Set<String>> rules) {
 		Map<String, Set<String>> newRule = parseRule(rule);
 
 		for (String ruleKey : newRule.keySet()) {
@@ -157,26 +168,27 @@ public class ArgumentParser {
 		rules.putAll(newRule);
 	}
 
-	private Map<String, Set<String>> parseRule(String rule) {
+	private static Map<String, Set<String>> parseRule(String rule) {
 		String ruleType;
 
-		if (rule.contains(ParserConstants.CANNOT_DEPEND))
+		if (rule.contains(ParserConstants.CANNOT_DEPEND)) {
 			ruleType = ParserConstants.CANNOT_DEPEND;
-		else if (rule.contains(ParserConstants.CAN_DEPEND))
+		} else if (rule.contains(ParserConstants.CAN_DEPEND)) {
 			ruleType = ParserConstants.CAN_DEPEND;
-		else
+		} else {
 			return Collections.EMPTY_MAP;
+		}
 
 		String[] separateSides = rule.split(ruleType, 2);
 		String leftSide = separateSides[0];
 		String rightSide = separateSides[1];
 
-		Set<String> leftSet = new HashSet();
-		Set<String> rightSet = new HashSet();
+		Set<String> leftSet = new HashSet<>();
+		Set<String> rightSet = new HashSet<>();
 
 		leftSet = parseItems(leftSide);
 		rightSet = parseItems(rightSide);
-		Map<String, Set<String>> formattedRule = new HashMap();
+		Map<String, Set<String>> formattedRule = new HashMap<>();
 
 		for (String leftRule : leftSet) {
 			Set<String> oldRules = formattedRule.get(leftRule);
@@ -193,16 +205,16 @@ public class ArgumentParser {
 		return formattedRule;
 	}
 
-	private List<String> getValueList(String value, String separator) {
-		List<String> list = new ArrayList();
+	private static List<String> getValueList(String value, String separator) {
+		List<String> list = new ArrayList<>();
 		for (String item : value.split(separator)) {
 			list.add(item);
 		}
 		return list;
 	}
 
-	private Set<String> parseItems(String items) {
-		Set<String> itemSet = new HashSet();
+	private static Set<String> parseItems(String items) {
+		Set<String> itemSet = new HashSet<>();
 
 		String[] allItems = items.split(ParserConstants.SMALL_SEPARATOR);
 		for (String item : allItems) {

@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.core.cycleanalysis;
 
@@ -21,7 +21,7 @@ import org.dtangler.core.dependencies.Scope;
 
 public class CycleValidator extends DependencyAnalyzer {
 
-	private final Set<Dependency> processedItems = new HashSet();
+	private final Set<Dependency> processedItems = new HashSet<>();
 	private final boolean cyclesAllowed;
 	private int stepCount = 0;
 
@@ -32,12 +32,13 @@ public class CycleValidator extends DependencyAnalyzer {
 	private void findCycles(Dependable item, DependencyGraph dependencies) {
 		Set<Dependable> deps = dependencies.getDependencies(item);
 
-		for (Dependable dep : deps)
+		for (Dependable dep : deps) {
 			findCycles(item, createPath(new DependencyPath(Collections
 					.singletonList(item)), dep), dep, dependencies);
+		}
 	}
 
-	private DependencyPath createPath(DependencyPath prevPath,
+	private static DependencyPath createPath(DependencyPath prevPath,
 			Dependable nextItem) {
 		DependencyPath path = new DependencyPath(prevPath.getItems());
 		path.addItem(nextItem);
@@ -49,8 +50,9 @@ public class CycleValidator extends DependencyAnalyzer {
 		Set<Dependable> childDeps = dependencies.getDependencies(dep);
 
 		Dependency dependency = path.getDependencyByDependee(dep);
-		if (processedItems.contains(dependency))
+		if (processedItems.contains(dependency)) {
 			return;
+		}
 
 		stepCount++;
 		for (Dependable childDep : childDeps) {
@@ -77,22 +79,25 @@ public class CycleValidator extends DependencyAnalyzer {
 		}
 	}
 
-	private Dependable getDependee(int index, List<Dependable> cycleMembers) {
-		if (index >= cycleMembers.size() - 1)
+	private static Dependable getDependee(int index, List<Dependable> cycleMembers) {
+		if (index >= cycleMembers.size() - 1) {
 			return cycleMembers.get(0);
+		}
 		return cycleMembers.get(index + 1);
 	}
 
-	private DependencyCycle createCycle(Dependable cycleMember,
+	private static DependencyCycle createCycle(Dependable cycleMember,
 			List<Dependable> cycleMembers) {
-		List<Dependable> cycle = new ArrayList();
+		List<Dependable> cycle = new ArrayList<>();
 		cycle.add(cycleMember);
 		int index = cycleMembers.indexOf(cycleMember);
 		int count = cycleMembers.size();
-		if (index < cycleMembers.size() - 1)
+		if (index < cycleMembers.size() - 1) {
 			cycle.addAll(cycleMembers.subList(index + 1, count));
-		if (index > 0)
+		}
+		if (index > 0) {
 			cycle.addAll(cycleMembers.subList(0, index));
+		}
 		cycle.add(cycleMember);
 
 		return new DependencyCycle(cycle);
@@ -118,9 +123,11 @@ public class CycleValidator extends DependencyAnalyzer {
 		}
 	}
 
+	@Override
 	public boolean isValidResult() {
-		if (cyclesAllowed)
+		if (cyclesAllowed) {
 			return true;
+		}
 		return getViolations().isEmpty();
 	}
 }

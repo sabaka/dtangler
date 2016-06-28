@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.core.ruleanalysis;
 
@@ -20,7 +20,7 @@ public class RuleFilter {
 	}
 
 	public List<Rule> getRulesForDependant(Dependable dependant) {
-		List<Rule> rulesFound = new ArrayList();
+		List<Rule> rulesFound = new ArrayList<>();
 		for (Rule rule : rules) {
 			if (rule.appliesToLeftSide(dependant)) {
 				rulesFound.add(rule);
@@ -31,7 +31,7 @@ public class RuleFilter {
 
 	public List<Rule> getParentRulesForDependant(Dependable dependant,
 			Dependencies dependencies) {
-		List<Rule> rules = new ArrayList();
+		List<Rule> rules = new ArrayList<>();
 		Set<Dependable> parents = dependencies
 				.getParentsFromAllScopes(dependant);
 		for (Dependable parent : parents) {
@@ -43,8 +43,9 @@ public class RuleFilter {
 	public boolean isDependencyAllowedByRule(Dependable dependant,
 			Dependable dependee) {
 		for (Rule rule : rules) {
-			if (!rule.getType().equals(Rule.Type.canDepend))
+			if (!rule.getType().equals(Rule.Type.canDepend)) {
 				continue;
+			}
 			if (rule.appliesToLeftSide(dependant)
 					&& rule.appliesToRightSide(dependee)) {
 				return true;

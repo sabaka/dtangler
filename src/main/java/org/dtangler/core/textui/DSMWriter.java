@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.core.textui;
 
@@ -31,8 +31,9 @@ public class DSMWriter {
 
 	private void printColumnHeaders(int size) {
 		printEmptyRowHeader();
-		for (int i = 1; i <= size; i++)
+		for (int i = 1; i <= size; i++) {
 			printCell(Integer.toString(i));
+		}
 		nextRow();
 	}
 
@@ -40,22 +41,26 @@ public class DSMWriter {
 			AnalysisResult analysisResult) {
 		printRowHeader(index, row.getDependee().getDisplayName(), row
 				.getDependee().getContentCount());
-		for (DsmCell dep : row.getCells())
+		for (DsmCell dep : row.getCells()) {
 			printCell(formatDependency(dep, analysisResult));
+		}
 		nextRow();
 	}
 
-	private String formatDependency(DsmCell dep, AnalysisResult analysisResult) {
-		if (!dep.isValid())
+	private static String formatDependency(DsmCell dep, AnalysisResult analysisResult) {
+		if (!dep.isValid()) {
 			return "####";
-		if (dep.getDependencyWeight() == 0)
+		}
+		if (dep.getDependencyWeight() == 0) {
 			return "";
+		}
 		String s = Integer.toString(dep.getDependencyWeight());
 		// FIXME: Severity.error might mean something else than a cycle, we
 		// should change the UI and show an 'E' instead
 		if (!analysisResult.getViolations(dep.getDependency(), Severity.error)
-				.isEmpty())
+				.isEmpty()) {
 			s = s + "C";
+		}
 		return s;
 	}
 
@@ -68,9 +73,10 @@ public class DSMWriter {
 				formatName(name, 40), pkgCount }));
 	}
 
-	private String formatName(String name, int length) {
-		if (name.length() <= length)
+	private static String formatName(String name, int length) {
+		if (name.length() <= length) {
 			return name;
+		}
 		return ".." + name.substring(name.length() - 38);
 	}
 

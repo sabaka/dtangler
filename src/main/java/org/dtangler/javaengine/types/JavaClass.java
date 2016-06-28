@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.javaengine.types;
 
@@ -14,7 +14,7 @@ import org.dtangler.core.dependencies.Dependable;
 public class JavaClass {
 
 	private static final String OBJECT = "java.lang.Object";
-	private final Map<String, Integer> dependencies = new HashMap();
+	private final Map<String, Integer> dependencies = new HashMap<>();
 	private final String className;
 	private boolean isAbstract;
 	private String sourceFileName;
@@ -34,10 +34,12 @@ public class JavaClass {
 	}
 
 	public void addDependency(String className) {
-		if (className.equals(this.className))
+		if (className.equals(this.className)) {
 			return; // offcourse we depend on ourselves.
-		if (className.equals(OBJECT))
+		}
+		if (className.equals(OBJECT)) {
 			return; // Every class depends on Object
+		}
 		String baseClassName = getBaseClassName(className);
 		Integer weight = dependencies.get(baseClassName);
 		if (weight == null) {
@@ -55,9 +57,10 @@ public class JavaClass {
 		return getBaseClassName(getFullName());
 	}
 
-	private String getBaseClassName(String fullName) {
-		if (!isInnerClass(fullName))
+	private static String getBaseClassName(String fullName) {
+		if (!isInnerClass(fullName)) {
 			return fullName;
+		}
 		return fullName.split("\\$")[0];
 	}
 
@@ -75,15 +78,17 @@ public class JavaClass {
 
 	public String getName() {
 		int lastDotIndex = className.lastIndexOf(".");
-		if (lastDotIndex >= 0 && lastDotIndex < className.length())
+		if (lastDotIndex >= 0 && lastDotIndex < className.length()) {
 			return className.substring(lastDotIndex + 1);
+		}
 		return className;
 	}
 
 	public String getPackage() {
 		int lastDotIndex = className.lastIndexOf(".");
-		if (lastDotIndex >= 0 && lastDotIndex < className.length())
+		if (lastDotIndex >= 0 && lastDotIndex < className.length()) {
 			return className.substring(0, lastDotIndex);
+		}
 		return "default";
 	}
 
@@ -97,8 +102,9 @@ public class JavaClass {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof JavaClass))
+		if (!(obj instanceof JavaClass)) {
 			return false;
+		}
 		JavaClass other = (JavaClass) obj;
 		return getFullName().equals(other.getFullName());
 	}
@@ -123,18 +129,20 @@ public class JavaClass {
 		return isInnerClass(getFullName());
 	}
 
-	private boolean isInnerClass(String fullName) {
+	private static boolean isInnerClass(String fullName) {
 		return fullName.contains("$");
 	}
 
 	public void addInnerClass(JavaClass innerClass) {
-		for (String dep : innerClass.getDependencies().keySet())
+		for (String dep : innerClass.getDependencies().keySet()) {
 			addDependency(dep);
+		}
 		contentCount++;
 	}
 
 	public void addInnerClasses(Set<JavaClass> innerClasses) {
-		for (JavaClass clazz : innerClasses)
+		for (JavaClass clazz : innerClasses) {
 			addInnerClass(clazz);
+		}
 	}
 }

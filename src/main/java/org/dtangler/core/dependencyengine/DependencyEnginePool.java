@@ -24,7 +24,7 @@ import org.dtangler.core.input.ConfigFileParser;
 
 public class DependencyEnginePool {
 
-	private final List<DependencyEngine> dependencyEngines = new ArrayList<DependencyEngine>();
+	private final List<DependencyEngine> dependencyEngines = new ArrayList<>();
 
 	private final String packagenamePrefix = "org/dtangler";
 	private final String dependencyEngineConfigFilePrefix = "dependency-engine-";
@@ -41,8 +41,9 @@ public class DependencyEnginePool {
 	public DependencyEnginePool(DependencyEngine... dependencyEngines) {
 		if (dependencyEngines != null) {
 			for (DependencyEngine dependencyEngine : dependencyEngines) {
-				if (dependencyEngine.getDependencyEngineId() == null)
+				if (dependencyEngine.getDependencyEngineId() == null) {
 					dependencyEngine.setDependencyEngineId(dependencyEngine.getClass().getSimpleName());
+				}
 				add(dependencyEngine.getDependencyEngineId(), dependencyEngine);
 			}
 		}
@@ -51,17 +52,20 @@ public class DependencyEnginePool {
 	private DependencyEngine getDependencyEngine(String id) {
 		for (DependencyEngine dependencyEngine : dependencyEngines) {
 			if (dependencyEngine == null
-					|| dependencyEngine.getDependencyEngineId() == null)
+					|| dependencyEngine.getDependencyEngineId() == null) {
 				continue;
-			if (dependencyEngine.getDependencyEngineId().equalsIgnoreCase(id))
+			}
+			if (dependencyEngine.getDependencyEngineId().equalsIgnoreCase(id)) {
 				return dependencyEngine;
+			}
 		}
 		return null;
 	}
 
 	private void addDependencyEngine(DependencyEngine dependencyEngine) {
-		if (dependencyEngine != null)
+		if (dependencyEngine != null) {
 			dependencyEngines.add(dependencyEngine);
+		}
 	}
 
 	public synchronized void add(String id, DependencyEngine dependencyEngine) {
@@ -82,10 +86,12 @@ public class DependencyEnginePool {
 		DependencyEngine engineMaybe = null;
 		boolean ambiguousSituation = false;
 		for (DependencyEngine dependencyEngine : dependencyEngines) {
-			if (dependencyEngine == null)
+			if (dependencyEngine == null) {
 				continue;
-			if (dependencyEngine.getArgumentsMatchThisEngine(arguments) == DependencyEngine.ArgumentsMatch.yes)
+			}
+			if (dependencyEngine.getArgumentsMatchThisEngine(arguments) == DependencyEngine.ArgumentsMatch.yes) {
 				return dependencyEngine;
+			}
 			if (dependencyEngine.getArgumentsMatchThisEngine(arguments) == DependencyEngine.ArgumentsMatch.maybe) {
 				if (engineMaybe == null) {
 					engineMaybe = dependencyEngine;
@@ -112,43 +118,48 @@ public class DependencyEnginePool {
 				&& arguments.getDependencyEngineId().length() > 0) {
 			if (!(dependencyEngine != null
 					&& dependencyEngine.getDependencyEngineId() != null && dependencyEngine
-					.getDependencyEngineId().equalsIgnoreCase(
-							arguments.getDependencyEngineId()))) {
+							.getDependencyEngineId().equalsIgnoreCase(
+									arguments.getDependencyEngineId()))) {
 				throw new DtException(
 						"unable to find a dependency engine with id: "
 								+ arguments.getDependencyEngineId());
 			}
-		};
+		}
+		;
 		return dependencyEngine;
 	}
 
 	public DependencyEngine getDefaultEngine() {
-		if (defaultDependencyEngineId == null)
+		if (defaultDependencyEngineId == null) {
 			throw new DtException(
 					"unable to find the default dependency engine id");
+		}
 		return get(defaultDependencyEngineId);
 	}
 
 	public synchronized DependencyEngine get(String id) {
 		DependencyEngine engine = getDependencyEngine(id);
-		if (engine == null)
+		if (engine == null) {
 			throw new DtException(
 					"unable to find a dependency engine with id: " + id);
+		}
 		return engine;
 	}
 
 	public synchronized List<String> getDependencyEngineIds() {
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		for (DependencyEngine dependencyEngine : dependencyEngines) {
 			if (dependencyEngine == null
-					|| dependencyEngine.getDependencyEngineId() == null)
+					|| dependencyEngine.getDependencyEngineId() == null) {
 				continue;
+			}
 			list.add(new String(dependencyEngine.getDependencyEngineId()));
 		}
 		return list;
 	}
 
 	private class FileNameDependencyEngineConfig implements FileFilter {
+		@Override
 		public boolean accept(File file) {
 			boolean match = false;
 			if (file.isFile()
@@ -159,7 +170,7 @@ public class DependencyEnginePool {
 		}
 	}
 
-	private InputStream getFileAsInputStream(String fileName) {
+	private static InputStream getFileAsInputStream(String fileName) {
 		if (isJarFileName(fileName)) {
 			try {
 				JarURLConnection jarURLConnection = openJarURLConnection(fileName);
@@ -186,7 +197,7 @@ public class DependencyEnginePool {
 	private void loadDependencyEngine(InputStream inputStream) {
 		Map<String, String> configFileValues = new ConfigFileParser(
 				inputStream, DependencyEngineConfigConstants.VALID_KEYS)
-				.parseValues();
+						.parseValues();
 		String id = configFileValues
 				.get(DependencyEngineConfigConstants.ID_DEPENDENCY_ENGINE_KEY);
 		String dependencyEngineClassPath = configFileValues
@@ -213,20 +224,22 @@ public class DependencyEnginePool {
 	private void loadDependencyEnginePoolSettings(InputStream inputStream) {
 		Map<String, String> configFileValues = new ConfigFileParser(
 				inputStream, DependencyEnginePoolConfigConstants.VALID_KEYS)
-				.parseValues();
+						.parseValues();
 		defaultDependencyEngineId = configFileValues
 				.get(DependencyEnginePoolConfigConstants.ID_DEFAULT_DEPENDENCY_ENGINE_KEY);
-		if (defaultDependencyEngineId == null)
+		if (defaultDependencyEngineId == null) {
 			throw new DtException(
 					"unable to determine the default dependency engine id");
+		}
 	}
 
 	private void initPool() {
 		List<String> listDependencyEngineConfigFilenames = searchDependencyEngineConfigFiles(
 				packagenamePrefix, DependencyEnginePool.class);
 		for (String configFileName : listDependencyEngineConfigFilenames) {
-			if (configFileName == null)
+			if (configFileName == null) {
 				continue;
+			}
 			InputStream inputStream = getFileAsInputStream(configFileName);
 			if (configFileName.matches(dependencyEnginePoolConfigFileRegex)) {
 				loadDependencyEnginePoolSettings(inputStream);
@@ -239,36 +252,43 @@ public class DependencyEnginePool {
 		}
 	}
 
-	private String getFileName(String fileName) {
-		if (fileName == null)
+	private static String getFileName(String fileName) {
+		if (fileName == null) {
 			return null;
+		}
 		try {
 			fileName = URLDecoder.decode(fileName, "UTF-8");
-			if (fileName.indexOf('!') != -1)
+			if (fileName.indexOf('!') != -1) {
 				fileName = fileName.substring(0, fileName.indexOf('!'));
+			}
 		} catch (Exception e) {
 		}
-		if (fileName.length() > 1 && fileName.matches("/.:/.*"))
+		if (fileName.length() > 1 && fileName.matches("/.:/.*")) {
 			return fileName.substring(1);
+		}
 		if (fileName.length() > "file:/".length()
-				&& fileName.matches("file:/.:/.*"))
+				&& fileName.matches("file:/.:/.*")) {
 			return fileName.substring("file:/".length());
+		}
 		if (fileName.length() > "file:".length()
-				&& fileName.matches("file:/.*"))
+				&& fileName.matches("file:/.*")) {
 			return fileName.substring("file:".length());
+		}
 
 		return fileName;
 	}
 
-	private boolean isJarFileName(String fileName) {
-		if (fileName == null)
+	private static boolean isJarFileName(String fileName) {
+		if (fileName == null) {
 			throw new DtException("invalid file name: null");
+		}
 		return fileName.lastIndexOf("!") >= 0 ? true : false;
 	}
 
-	private String getJarFileEntryName(String fileName) {
-		if (fileName == null)
+	private static String getJarFileEntryName(String fileName) {
+		if (fileName == null) {
 			throw new DtException("invalid jar file name: null");
+		}
 		int exclPos = fileName.lastIndexOf("!");
 		if (exclPos >= 0 && exclPos < fileName.length() - 1) {
 			return fileName.substring(exclPos + 2);
@@ -277,16 +297,18 @@ public class DependencyEnginePool {
 	}
 
 	private List<String> searchDependencyEngineConfigFiles(File file) {
-		List<String> fileNames = new ArrayList<String>();
-		if (file == null || file.getAbsolutePath() == null)
+		List<String> fileNames = new ArrayList<>();
+		if (file == null || file.getAbsolutePath() == null) {
 			return fileNames;
+		}
 		if (file.isDirectory()) {
 			RecursiveFileFinder fileFinder = new RecursiveFileFinder();
 			fileFinder.setFilter(new FileNameDependencyEngineConfig());
 			fileFinder.findFiles(file.getPath());
 			for (File f : fileFinder.getFiles()) {
-				if (f == null || f.getAbsolutePath() == null)
+				if (f == null || f.getAbsolutePath() == null) {
 					continue;
+				}
 				fileNames.add(f.getAbsolutePath());
 			}
 		} else {
@@ -299,14 +321,15 @@ public class DependencyEnginePool {
 
 	private List<String> searchDependencyEngineConfigFiles(
 			String prefixPackageName, Class<?> contentLoaderClass) {
-		List<String> fileNames = new ArrayList<String>();
+		List<String> fileNames = new ArrayList<>();
 		Enumeration<?> enumFiles = findConfigFileUrls(prefixPackageName,
 				contentLoaderClass);
 		while (enumFiles != null && enumFiles.hasMoreElements()) {
 			URL url = (URL) enumFiles.nextElement();
 			if (url == null || url.getFile() == null
-					|| url.getFile().length() <= 1)
+					|| url.getFile().length() <= 1) {
 				continue;
+			}
 			String fileName = getFileName(url.getPath());
 			if (url.getProtocol() != null
 					&& url.getProtocol().equalsIgnoreCase("jar")) {
@@ -335,26 +358,27 @@ public class DependencyEnginePool {
 		return fileNames;
 	}
 
-	private JarFile openJar(URL url) {
+	private static JarFile openJar(URL url) {
 		try {
-			JarURLConnection jarURLConnection = (JarURLConnection)url.openConnection();
+			JarURLConnection jarURLConnection = (JarURLConnection) url.openConnection();
 			return jarURLConnection.getJarFile();
 		} catch (IOException e) {
 			throw new RuntimeException("Cannot open jar file: " + url.getFile(), e);
 		}
 	}
 
-	private JarURLConnection openJarURLConnection(String fileName) {
+	private static JarURLConnection openJarURLConnection(String fileName) {
 		try {
 			URL url = null;
 			if (fileName.toLowerCase().startsWith("http")) {
-				url = new URL("jar:"+fileName);
+				url = new URL("jar:" + fileName);
 			} else {
-				if (fileName.startsWith("/"))
+				if (fileName.startsWith("/")) {
 					fileName = fileName.substring(1);
-				url = new URL("jar:file:/"+fileName);
+				}
+				url = new URL("jar:file:/" + fileName);
 			}
-			return (JarURLConnection)url.openConnection();
+			return (JarURLConnection) url.openConnection();
 		} catch (MalformedURLException e) {
 			throw new RuntimeException("Cannot open jar file: " + fileName, e);
 		} catch (IOException e) {
@@ -362,7 +386,7 @@ public class DependencyEnginePool {
 		}
 	}
 
-	private Enumeration<URL> findConfigFileUrls(String prefixPackageName,
+	private static Enumeration<URL> findConfigFileUrls(String prefixPackageName,
 			Class<?> contentLoaderClass) {
 		try {
 			return contentLoaderClass.getClassLoader().getResources(
@@ -370,7 +394,8 @@ public class DependencyEnginePool {
 		} catch (IOException e) {
 			throw new RuntimeException(
 					"Cannot find config file URLs starting with prefix:"
-							+ prefixPackageName, e);
+							+ prefixPackageName,
+					e);
 		}
 	}
 

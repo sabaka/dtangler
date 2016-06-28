@@ -1,4 +1,4 @@
-//This product is provided under the terms of EPL (Eclipse Public License) 
+//This product is provided under the terms of EPL (Eclipse Public License)
 //version 1.0.
 //
 //The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
@@ -26,11 +26,12 @@ public class ChildViolationFinder {
 
 	public Map<Dependable, Set<Violation>> findChildViolationsForParents(
 			Map<Dependency, Set<Violation>> violationMap) {
-		Set<Violation> allViolations = new HashSet();
-		for (Set<Violation> violations : violationMap.values())
+		Set<Violation> allViolations = new HashSet<>();
+		for (Set<Violation> violations : violationMap.values()) {
 			allViolations.addAll(violations);
+		}
 
-		Map<Dependable, Set<Violation>> result = new HashMap();
+		Map<Dependable, Set<Violation>> result = new HashMap<>();
 		for (Violation v : allViolations) {
 			if (violationMembersHaveSingleParent(v)) {
 				addChildViolations(result, v);
@@ -46,7 +47,7 @@ public class ChildViolationFinder {
 		for (Dependable dep : newViolations.keySet()) {
 			Set<Violation> oldViolations = result.get(dep);
 			if (oldViolations == null) {
-				oldViolations = new HashSet();
+				oldViolations = new HashSet<>();
 			}
 			oldViolations.addAll(newViolations.get(dep));
 			result.put(dep, oldViolations);
@@ -57,21 +58,24 @@ public class ChildViolationFinder {
 		Dependable firstParent = null;
 		for (Dependable member : violation.getMembers()) {
 			Dependable parent = getParent(member);
-			if (parent == null)
+			if (parent == null) {
 				return false;
-			if (firstParent == null)
+			}
+			if (firstParent == null) {
 				firstParent = parent;
-			else if (!firstParent.equals(parent))
+			} else if (!firstParent.equals(parent)) {
 				return false;
+			}
 		}
 		return true;
 	}
 
 	private Dependable getParent(Dependable dependable) {
 		Set<Dependable> parents = getParents(dependable);
-		if (parents.size() != 1)
+		if (parents.size() != 1) {
 			// Handling multiparent relationships requires new story
 			return null;
+		}
 		return parents.iterator().next();
 	}
 
@@ -82,30 +86,33 @@ public class ChildViolationFinder {
 
 	private Map<Dependable, Set<Violation>> createChildViolationsForParents(
 			Violation v, Set<Dependable> items) {
-		if (items.isEmpty())
+		if (items.isEmpty()) {
 			return Collections.EMPTY_MAP;
-		Set<Dependable> parents = new HashSet();
-		for (Dependable item : items)
+		}
+		Set<Dependable> parents = new HashSet<>();
+		for (Dependable item : items) {
 			parents.addAll(getParents(item));
+		}
 
-		Map<Dependable, Set<Violation>> result = new HashMap();
-		for (Dependable parent : parents)
+		Map<Dependable, Set<Violation>> result = new HashMap<>();
+		for (Dependable parent : parents) {
 			createChildViolation(parent, v, result);
+		}
 		result.putAll(createChildViolationsForParents(v, parents));
 		return result;
 	}
 
-	private void createChildViolation(Dependable parent, Violation v,
+	private static void createChildViolation(Dependable parent, Violation v,
 			Map<Dependable, Set<Violation>> violationMap) {
 		Set<Violation> violations = violationMap.get(parent);
 		if (violations == null) {
-			violations = new HashSet();
+			violations = new HashSet<>();
 			violationMap.put(parent, violations);
 		}
 		violations.add(createChildViolation(parent, v));
 	}
 
-	private Violation createChildViolation(final Dependable parent,
+	private static Violation createChildViolation(final Dependable parent,
 			final Violation v) {
 		return new ChildViolation(parent, v);
 	}

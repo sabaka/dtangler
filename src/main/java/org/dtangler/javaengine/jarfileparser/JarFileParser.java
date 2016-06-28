@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.javaengine.jarfileparser;
 
@@ -25,14 +25,14 @@ import org.dtangler.javaengine.types.JavaClass;
 public class JarFileParser {
 
 	private String path;
-	private Map<String, byte[]> bytes = new HashMap();
+	private Map<String, byte[]> bytes = new HashMap<>();
 
 	public Set<JavaClass> parse(File file) throws IOException {
 		this.path = file.getAbsolutePath();
 		readBytesFromJar();
 
 		ClassFileParser parser = new ClassFileParser();
-		Set<JavaClass> classes = new HashSet();
+		Set<JavaClass> classes = new HashSet<>();
 		for (String name : bytes.keySet()) {
 			classes.add(parser.parse(new DataInputStream(
 					new ByteArrayInputStream(bytes.get(name)))));
@@ -45,8 +45,9 @@ public class JarFileParser {
 		try {
 			JarEntry nextJarEntry = input.getNextJarEntry();
 			while (nextJarEntry != null) {
-				if (nextJarEntry.getName().endsWith(".class"))
+				if (nextJarEntry.getName().endsWith(".class")) {
 					readBytesFromJarEntry(nextJarEntry.getName(), input);
+				}
 				nextJarEntry = input.getNextJarEntry();
 			}
 		} finally {
@@ -60,8 +61,9 @@ public class JarFileParser {
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 
 		int b;
-		while ((b = bufferedInput.read()) != -1)
+		while ((b = bufferedInput.read()) != -1) {
 			output.write(b);
+		}
 		bytes.put(fromJarEntry, output.toByteArray());
 	}
 

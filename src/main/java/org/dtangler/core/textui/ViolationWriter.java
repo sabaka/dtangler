@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.core.textui;
 
@@ -20,8 +20,9 @@ public class ViolationWriter {
 	}
 
 	public void printViolations(Set<Violation> violations) {
-		if (violations.isEmpty())
+		if (violations.isEmpty()) {
 			return;
+		}
 		List<String> sortedViolations = sortViolationsAlphabetically(violations);
 		println("");
 		for (String v : sortedViolations) {
@@ -29,8 +30,8 @@ public class ViolationWriter {
 		}
 	}
 
-	private List<String> sortViolationsAlphabetically(Set<Violation> violations) {
-		List<String> sortedViolations = new ArrayList();
+	private static List<String> sortViolationsAlphabetically(Set<Violation> violations) {
+		List<String> sortedViolations = new ArrayList<>();
 		for (Violation v : violations) {
 			sortedViolations.add(v.asText());
 		}

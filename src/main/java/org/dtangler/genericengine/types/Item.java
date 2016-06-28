@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.genericengine.types;
 
@@ -14,7 +14,7 @@ import org.dtangler.core.exception.DtException;
 
 public class Item {
 
-	private final Map<Item, Integer> dependencies = new HashMap<Item, Integer>();
+	private final Map<Item, Integer> dependencies = new HashMap<>();
 	private String scope = "";
 	private String displayname;
 	private String[] parentDisplaynames;
@@ -38,7 +38,6 @@ public class Item {
 			String[] parentDisplaynames, String encoding) {
 		init(scope, displayname, parentDisplaynames, encoding);
 	}
-
 
 	private void init(String scope, String displayname,
 			String[] parentDisplaynames, String encoding) {
@@ -74,10 +73,11 @@ public class Item {
 	public static String decodeValue(String str) {
 		return decodeValue(str, "UTF-8");
 	}
-	
+
 	public static String decodeValue(String str, String encoding) {
-		if (str == null)
+		if (str == null) {
 			throw new DtException("no item value to decode");
+		}
 		try {
 			return URLDecoder.decode(str, encoding);
 		} catch (Exception e) {
@@ -90,8 +90,9 @@ public class Item {
 	}
 
 	public static String encodeValue(String str, String encoding) {
-		if (str == null || str.trim().length() == 0)
+		if (str == null || str.trim().length() == 0) {
 			throw new DtException("no item value to encode");
+		}
 		try {
 			return URLEncoder.encode(str, encoding);
 		} catch (Exception e) {
@@ -100,8 +101,9 @@ public class Item {
 	}
 
 	public void addDependency(Item item) {
-		if (item.equals(this))
+		if (item.equals(this)) {
 			return;
+		}
 		Integer weight = dependencies.get(item);
 		if (weight == null) {
 			dependencies.put(item, 1);
@@ -119,8 +121,9 @@ public class Item {
 	}
 
 	public int getScopeIndex() {
-		if (this.parentDisplaynames == null)
+		if (this.parentDisplaynames == null) {
 			return 0;
+		}
 		return this.parentDisplaynames.length;
 	}
 
@@ -132,7 +135,7 @@ public class Item {
 		String fullName = "";
 		if (parentDisplaynames != null) {
 			for (String parent : parentDisplaynames) {
-				fullName += (encodeValue(parent, this.encoding) + " ");
+				fullName += encodeValue(parent, this.encoding) + " ";
 			}
 		}
 		fullName += encodeValue(this.displayname, this.encoding);
@@ -140,12 +143,14 @@ public class Item {
 	}
 
 	public static String getFullyqualifiedDisplayname(String name, String encoding) {
-		if (name == null)
+		if (name == null) {
 			return null;
-		if (encoding != null) {
-			name = decodeValue(name, encoding);
 		}
-		return name.replaceAll(" ", "/");
+		String result = name;
+		if (encoding != null) {
+			result = decodeValue(result, encoding);
+		}
+		return result.replaceAll(" ", "/");
 	}
 
 	public String[] getParentFullyqualifiednames() {
@@ -157,8 +162,8 @@ public class Item {
 			fullNames[iParent] = "";
 			for (int jParent = 0; jParent < iParent; jParent++) {
 				if (parentDisplaynames[iParent] != null) {
-					fullNames[iParent] += (encodeValue(
-							parentDisplaynames[jParent], this.encoding) + " ");
+					fullNames[iParent] += encodeValue(
+							parentDisplaynames[jParent], this.encoding) + " ";
 				}
 			}
 			fullNames[iParent] += encodeValue(parentDisplaynames[iParent], this.encoding);
@@ -177,8 +182,9 @@ public class Item {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof Item))
+		if (!(obj instanceof Item)) {
 			return false;
+		}
 		Item other = (Item) obj;
 		return getItemDefinitionAsString().equals(
 				other.getItemDefinitionAsString());
@@ -201,7 +207,7 @@ public class Item {
 	public void setContentCount(int contentCount) {
 		this.contentCount = contentCount;
 	}
-	
+
 	public String getEncoding() {
 		return this.encoding;
 	}

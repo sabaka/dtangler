@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.core.filefinder;
 
@@ -17,14 +17,12 @@ public class FullPathWildCardFileFilter implements FileFilter {
 	private final List<String> extensions;
 
 	/**
-	 * 
+	 *
 	 * @param extensions
-	 *            file extensions that the file must have in order to even be
-	 *            validated
+	 *            file extensions that the file must have in order to even be validated
 	 * @param masksToIgnore
-	 *            masks against the full path+filename are compared. If a
-	 *            filename matches one or more of the masks, it is filtered out.
-	 *            Wildcards ('*') are allowed in any position of theinput string
+	 *            masks against the full path+filename are compared. If a filename matches one or more of the masks, it
+	 *            is filtered out. Wildcards ('*') are allowed in any position of theinput string
 	 */
 	public FullPathWildCardFileFilter(List<String> extensions,
 			List<String> masksToIgnore) {
@@ -33,30 +31,36 @@ public class FullPathWildCardFileFilter implements FileFilter {
 
 	}
 
+	@Override
 	public boolean accept(File pathname) {
-		if (!isValidExtension(pathname.getName()))
+		if (!isValidExtension(pathname.getName())) {
 			return false;
+		}
 		return !isMatch(pathname.getAbsolutePath());
 	}
 
 	private boolean isValidExtension(String name) {
 		for (String extension : extensions) {
-			if (name.toLowerCase().endsWith(extension))
+			if (name.toLowerCase().endsWith(extension)) {
 				return true;
+			}
 		}
 		return false;
 	}
 
 	private boolean isMatch(String absolutePath) {
-		for (String mask : masksToIgnore)
-			if (isMatch(absolutePath, mask))
+		for (String mask : masksToIgnore) {
+			if (isMatch(absolutePath, mask)) {
 				return true;
+			}
+		}
 		return false;
 	}
 
-	private boolean isMatch(String absolutePath, String mask) {
-		if (absolutePath.equals(mask))
+	private static boolean isMatch(String absolutePath, String mask) {
+		if (absolutePath.equals(mask)) {
 			return true;
+		}
 		return new WildcardMatch(mask).isMatch(absolutePath);
 	}
 

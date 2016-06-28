@@ -20,22 +20,26 @@ public class ItemScope implements Scope {
 		this.scopeName = scopeName;
 	}
 
+	@Override
 	public String getDisplayName() {
 		return scopeName;
 	}
 
+	@Override
 	public int index() {
 		return this.index;
 	}
 
+	@Override
 	public int hashCode() {
 		return getDisplayName().hashCode();
 	}
 
+	@Override
 	public String toString() {
 		return getDisplayName();
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof ItemScope))

@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.core.input;
 
@@ -20,7 +20,7 @@ public class CommandLineParser {
 
 	public Map<String, String> parseValues(String[] args) {
 		List<String> groupedArgs = groupArguments(args);
-		Map<String, String> result = new Hashtable<String, String>();
+		Map<String, String> result = new Hashtable<>();
 
 		for (String line : groupedArgs) {
 			for (String possibleKey : allowedKeys) {
@@ -34,7 +34,7 @@ public class CommandLineParser {
 	}
 
 	private List<String> groupArguments(String[] args) {
-		List<String> groupedArgs = new ArrayList<String>();
+		List<String> groupedArgs = new ArrayList<>();
 		groupedArgs.addAll(Arrays.asList(args));
 
 		for (int i = groupedArgs.size() - 1; i > 0; i--) {
@@ -53,7 +53,7 @@ public class CommandLineParser {
 		return groupedArgs;
 	}
 
-	private String getValueForKey(String arg, String key) {
+	private static String getValueForKey(String arg, String key) {
 		String keyString = getKeyString(key);
 
 		if (arg.startsWith(keyString)) {

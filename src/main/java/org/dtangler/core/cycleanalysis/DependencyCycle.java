@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.core.cycleanalysis;
 
@@ -22,11 +22,12 @@ public class DependencyCycle implements Violation {
 
 	public DependencyCycle(List<Dependable> cycleElements) {
 		this.elements = cycleElements;
-		searchSet = new HashSet<Dependable>(cycleElements);
+		searchSet = new HashSet<>(cycleElements);
 
-		stringElements = new ArrayList();
-		for (Dependable item : cycleElements)
+		stringElements = new ArrayList<>();
+		for (Dependable item : cycleElements) {
 			stringElements.add(item.getDisplayName());
+		}
 		hashCode = calculateHashCode();
 	}
 
@@ -44,30 +45,29 @@ public class DependencyCycle implements Violation {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof DependencyCycle))
+		if (!(obj instanceof DependencyCycle)) {
 			return false;
+		}
 		List<String> otherElements = ((DependencyCycle) obj).stringElements;
-		if (stringElements.size() != otherElements.size())
+		if (stringElements.size() != otherElements.size()) {
 			return false;
+		}
 
 		// get rid of last element
 		otherElements = otherElements.subList(0, otherElements.size() - 1);
 
 		for (int i = 0; i < otherElements.size(); i++) {
-			if (otherElements.equals(getRolledList(i)))
+			if (otherElements.equals(getRolledList(i))) {
 				return true;
+			}
 		}
 		return false;
 	}
 
 	private List<String> getRolledList(int startIndex) {
-		List<String> result = new ArrayList<String>();
-		while (result.size() < stringElements.size() - 1) {
-			result.add(stringElements.get(startIndex));
-			startIndex++;
-			if (startIndex >= stringElements.size() - 1)
-				startIndex = 0;
-		}
+		List<String> result = new ArrayList<>();
+		result.addAll(stringElements.subList(startIndex, stringElements.size()));
+		result.addAll(stringElements.subList(0, startIndex));
 		return result;
 	}
 
@@ -89,26 +89,31 @@ public class DependencyCycle implements Violation {
 		return asText();
 	}
 
+	@Override
 	public String asText() {
 		StringBuilder sb = new StringBuilder();
 		for (Dependable e : elements) {
-			if (sb.length() > 0)
+			if (sb.length() > 0) {
 				sb.append("-->");
+			}
 			sb.append(e.getDisplayName());
 		}
 		return "Cycle: " + sb.toString();
 
 	}
 
+	@Override
 	public Severity getSeverity() {
 		return Severity.error;
 	}
 
+	@Override
 	public boolean appliesTo(Set<Dependable> dependables) {
 		return dependables.containsAll(searchSet);
 	}
 
+	@Override
 	public Set<Dependable> getMembers() {
-		return new HashSet(getElements());
+		return new HashSet<>(getElements());
 	}
 }

@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.core.dsmengine;
 
@@ -24,20 +24,22 @@ public class DsmEngine {
 	}
 
 	public Dsm createDsm() {
-		List<Dependable> allItems = new ArrayList(dependencies.getAllItems());
+		List<Dependable> allItems = new ArrayList<>(dependencies.getAllItems());
 		Collections.sort(allItems, new InstabilityComparator(dependencies));
 
-		List<DsmRow> rows = new ArrayList(allItems.size());
-		for (Dependable item : allItems)
+		List<DsmRow> rows = new ArrayList<>(allItems.size());
+		for (Dependable item : allItems) {
 			rows.add(new DsmRow(item, createRowCells(item, allItems)));
+		}
 		return new Dsm(rows);
 	}
 
 	private List<DsmCell> createRowCells(Dependable rowItem,
 			List<Dependable> allItems) {
-		List<DsmCell> cells = new ArrayList();
-		for (Dependable colItem : allItems)
+		List<DsmCell> cells = new ArrayList<>();
+		for (Dependable colItem : allItems) {
 			cells.add(createCell(rowItem, colItem));
+		}
 
 		return cells;
 	}

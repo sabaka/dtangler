@@ -1,4 +1,4 @@
-//This product is provided under the terms of EPL (Eclipse Public License) 
+//This product is provided under the terms of EPL (Eclipse Public License)
 //version 1.0.
 //
 //The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
@@ -23,14 +23,16 @@ public class RuleViolation implements Violation {
 		this.violatedRule = rule;
 	}
 
+	@Override
 	public String asText() {
 		return "Rule violation: " + violatedRule;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof RuleViolation))
+		if (!(obj instanceof RuleViolation)) {
 			return false;
+		}
 		RuleViolation other = (RuleViolation) obj;
 		return dependency.equals(other.dependency)
 				&& violatedRule.equals(other.violatedRule);
@@ -46,17 +48,20 @@ public class RuleViolation implements Violation {
 		return asText();
 	}
 
+	@Override
 	public Severity getSeverity() {
 		return Severity.warning;
 	}
 
+	@Override
 	public boolean appliesTo(Set<Dependable> dependables) {
 		return dependables.contains(dependency.getDependant())
 				&& dependables.contains(dependency.getDependee());
 	}
 
+	@Override
 	public Set<Dependable> getMembers() {
-		return new HashSet(Arrays.asList(dependency.getDependant(), dependency
+		return new HashSet<>(Arrays.asList(dependency.getDependant(), dependency
 				.getDependee()));
 	}
 }

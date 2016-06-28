@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.core.util;
 
@@ -16,12 +16,13 @@ public class WildcardMatch {
 	}
 
 	public boolean isMatch(String value) {
-		if (!regex.contains("*"))
+		if (!regex.contains("*")) {
 			return false;
+		}
 		return value.matches(regex);
 	}
 
-	private String createRegex(String mask) {
+	private static String createRegex(String mask) {
 		int pos = 0;
 		int nextPos = mask.indexOf("*", pos);
 

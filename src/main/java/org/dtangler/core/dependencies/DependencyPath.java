@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.core.dependencies;
 
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class DependencyPath {
 
-	private final List<Dependable> items = new ArrayList<Dependable>();
+	private final List<Dependable> items = new ArrayList<>();
 
 	public DependencyPath() {
 	}
@@ -29,22 +29,25 @@ public class DependencyPath {
 
 	public Dependency getDependencyByDependant(Dependable dependant) {
 		int index = items.indexOf(dependant);
-		if (index < 0 || index > items.size() - 2)
+		if (index < 0 || index > items.size() - 2) {
 			return null;
+		}
 		return new Dependency(dependant, items.get(index + 1));
 	}
 
 	public Dependency getDependencyByDependee(Dependable dependee) {
 		int index = items.indexOf(dependee);
-		if (index < 1)
+		if (index < 1) {
 			return null;
+		}
 		return new Dependency(items.get(index - 1), dependee);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof DependencyPath))
+		if (!(obj instanceof DependencyPath)) {
 			return false;
+		}
 		DependencyPath other = (DependencyPath) obj;
 		return items.equals(other.items);
 	}

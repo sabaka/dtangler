@@ -1,4 +1,4 @@
-//This product is provided under the terms of EPL (Eclipse Public License) 
+//This product is provided under the terms of EPL (Eclipse Public License)
 //version 1.0.
 //
 //The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
@@ -27,8 +27,9 @@ public class CommandLineApp {
 	}
 
 	public boolean run(String[] args) {
-		if (args.length == 0)
+		if (args.length == 0) {
 			throw new MissingArgumentsException();
+		}
 		return run(new ArgumentBuilder().build(args));
 	}
 
@@ -45,7 +46,7 @@ public class CommandLineApp {
 		return analysisResult.isValid();
 	}
 
-	private AnalysisResult getAnalysisResult(Arguments arguments,
+	private static AnalysisResult getAnalysisResult(Arguments arguments,
 			Dependencies dependencies) {
 		return new ConfigurableDependencyAnalyzer(arguments)
 				.analyze(dependencies);

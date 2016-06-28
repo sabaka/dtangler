@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.genericengine.dependencyengine;
 
@@ -21,37 +21,39 @@ public class ItemDependencyBuilder {
 		return new ItemDependencyBuilder();
 	}
 
-	private Dependable getDependable(
+	private static Dependable getDependable(
 			Map<String, Map<String, Dependable>> dependables, String itemScope,
 			int scopeIndex, String fullyqualifiedname, String displayname,
 			String encoding, int contentCount) {
 		Map<String, Dependable> scopeDependables = dependables.get(itemScope);
 		if (scopeDependables == null) {
-			scopeDependables = new HashMap<String, Dependable>();
+			scopeDependables = new HashMap<>();
 			dependables.put(itemScope, scopeDependables);
 		}
 		Dependable dependable = scopeDependables.get(fullyqualifiedname);
 		if (dependable == null) {
 			dependable = new Dependable(new ItemScope(itemScope, scopeIndex),
 					Item.getFullyqualifiedDisplayname(fullyqualifiedname,
-							encoding), displayname, contentCount);
+							encoding),
+					displayname, contentCount);
 			scopeDependables.put(fullyqualifiedname, dependable);
 		}
 		return dependable;
 	}
 
-	private Dependable getDependable(
+	private static Dependable getDependable(
 			Map<String, Map<String, Dependable>> dependables, Item item) {
 		return getDependable(dependables, item.getScope(),
 				item.getScopeIndex(), item.getFullyqualifiedname(), item
-						.getDisplayname(), item.getEncoding(), item
+						.getDisplayname(),
+				item.getEncoding(), item
 						.getContentCount());
 	}
 
-	private Map<Dependable, Integer> getDependencies(
+	private static Map<Dependable, Integer> getDependencies(
 			Map<String, Map<String, Dependable>> dependables, Item item) {
 		Map<Item, Integer> itemDependencies = item.getDependencies();
-		Map<Dependable, Integer> deps = new HashMap<Dependable, Integer>();
+		Map<Dependable, Integer> deps = new HashMap<>();
 		for (Item itemDependee : itemDependencies.keySet()) {
 			Dependable dependeeDependable = getDependable(dependables,
 					itemDependee);
@@ -62,13 +64,14 @@ public class ItemDependencyBuilder {
 		return deps;
 	}
 
-	private void addParents(ValidScopes validScopes,
+	private static void addParents(ValidScopes validScopes,
 			Dependable childDependable, String[] parentFullyqualifiednames,
 			String parentDisplaynames[],
 			Map<String, Map<String, Dependable>> dependables,
 			Dependencies dependencies, String encoding) {
-		if (parentFullyqualifiednames == null)
+		if (parentFullyqualifiednames == null) {
 			return;
+		}
 		for (int iParent = parentFullyqualifiednames.length - 1; iParent >= 0; iParent--) {
 			int parentScopeIndex = childDependable.getScope().index() - 1;
 			String parentScope = validScopes
@@ -87,7 +90,7 @@ public class ItemDependencyBuilder {
 	public Dependencies build(ValidScopes validScopes, Set<Item> items) {
 
 		validScopes.generateScopeNamesForUndefinedScopeNames("scope #", "#");
-		Map<String, Map<String, Dependable>> dependables = new HashMap<String, Map<String, Dependable>>();
+		Map<String, Map<String, Dependable>> dependables = new HashMap<>();
 		Dependencies dependencies = new Dependencies();
 
 		for (Item item : items) {
@@ -96,8 +99,9 @@ public class ItemDependencyBuilder {
 					dependables, item));
 			addParents(validScopes, dependable, item
 					.getParentFullyqualifiednames(), item
-					.getParentDisplaynames(), dependables, dependencies, item
-					.getEncoding());
+							.getParentDisplaynames(),
+					dependables, dependencies, item
+							.getEncoding());
 		}
 
 		return dependencies;

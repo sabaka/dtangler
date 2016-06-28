@@ -1,7 +1,7 @@
-// This product is provided under the terms of EPL (Eclipse Public License) 
+// This product is provided under the terms of EPL (Eclipse Public License)
 // version 1.0.
 //
-// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php 
+// The full license text can be read from: http://www.eclipse.org/org/documents/epl-v10.php
 
 package org.dtangler.core.input;
 
@@ -46,7 +46,7 @@ public class ConfigFileParser {
 	}
 
 	public Map<String, String> parseValues() {
-		Map<String, String> values = new Hashtable<String, String>();
+		Map<String, String> values = new Hashtable<>();
 
 		for (String key : allowedKeys) {
 			if (properties.containsKey(key)) {
@@ -65,16 +65,18 @@ public class ConfigFileParser {
 			try {
 				while (true) {
 					int value = reader.read();
-					if (value == -1)
+					if (value == -1) {
 						break;
+					}
 					char c = (char) value;
-					if (slashCount == 1)
+					if (slashCount == 1) {
 						if (slashCount == 1
-								&& (!Character.isWhitespace(c) && c != '\\')) {
+								&& !Character.isWhitespace(c) && c != '\\') {
 							b.append('\\');
 						}
+					}
 					b.append(c);
-					slashCount = (c == '\\') ? slashCount + 1 : 0;
+					slashCount = c == '\\' ? slashCount + 1 : 0;
 				}
 				byte[] byteArray = b.toString().getBytes("ISO-8859-1");
 				return new ByteArrayInputStream(byteArray);
