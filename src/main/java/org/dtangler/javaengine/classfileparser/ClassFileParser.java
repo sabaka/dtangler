@@ -272,7 +272,7 @@ public class ClassFileParser {
 		return s.replace(SLASH, DOT);
 	}
 
-	private void addDependency(String s, JavaClass jClass) {
+	private static void addDependency(String s, JavaClass jClass) {
 		if (s.charAt(0) == BRACKET_OPEN) {
 			List<String> types = descriptorToTypes(s);
 			if (types.size() == 0) {

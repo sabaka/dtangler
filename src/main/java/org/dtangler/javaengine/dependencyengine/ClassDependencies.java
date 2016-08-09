@@ -40,7 +40,7 @@ public class ClassDependencies {
 		Map<String, Dependable> locs = new HashMap<>();
 		for (JavaClass clazz : classes) {
 			setPackageNames(pkgs, clazz);
-			setLocationNames(locs, clazz);
+			setLocationNames(clazz);
 		}
 		this.packages.putAll(pkgs);
 		this.locations.putAll(locs);
@@ -57,7 +57,7 @@ public class ClassDependencies {
 		pkg.setContentCount(pkg.getContentCount() + 1);
 	}
 
-	private void setLocationNames(Map<String, Dependable> locs, JavaClass clazz) {
+	private void setLocationNames(JavaClass clazz) {
 		String location = clazz.getLocation();
 		Dependable loc = locations.get(location);
 		if (loc == null) {

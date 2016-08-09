@@ -97,14 +97,13 @@ public class JavaDependencyEngine extends AbstractDependencyEngine {
 			if (file.getName().endsWith(".class")) {
 				classes.add(getDataFromClassFile(file, fileFinder));
 			} else {
-				classes.addAll(getDataFromJarFile(file, fileFinder));
+				classes.addAll(getDataFromJarFile(file));
 			}
 		}
 		return classes;
 	}
 
-	private static Set<JavaClass> getDataFromJarFile(File file,
-			RecursiveFileFinder fileFinder) {
+	private static Set<JavaClass> getDataFromJarFile(File file) {
 		try {
 			Set<JavaClass> jarContents = new JarFileParser().parse(file);
 			for (JavaClass clazz : jarContents) {
